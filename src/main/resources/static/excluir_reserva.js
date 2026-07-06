@@ -14,7 +14,7 @@ document.querySelectorAll('.excluirReserva').forEach(function(button) {
             //console.log("id=" + id);
 
             // Realize a chamada AJAX para excluir o recurso
-            fetch(`/usuarioexcluir/${id}`, { // =
+            fetch(`/reservaexcluir/${id}`, { // =
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

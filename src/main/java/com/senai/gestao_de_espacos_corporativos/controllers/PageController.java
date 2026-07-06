@@ -6,6 +6,7 @@ import com.senai.gestao_de_espacos_corporativos.dtos.UsuarioDto;
 import com.senai.gestao_de_espacos_corporativos.services.RecursoService;
 import com.senai.gestao_de_espacos_corporativos.services.ReservaService;
 import com.senai.gestao_de_espacos_corporativos.services.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,12 @@ public class PageController {
     @GetMapping("/home")
     public String getHome() {
         return "home";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 
     //----------------------------------------------------------------
@@ -104,11 +111,18 @@ public class PageController {
         return "reservalista";
     }
 
-    @GetMapping("/reservaatualizar/{id}")
-    public String getReservaAtualizar(Model model, @PathVariable Long id) {
+    @GetMapping("/reservacancelar/{id}")
+    public String getReservaCancelar(Model model, @PathVariable Long id) {
         ReservaDto reserva = reservaService.obterReservaPorId(id);
         model.addAttribute("reserva", reserva);
         return "reservaatualizar";
+    }
+
+    @GetMapping("/reservavisualizar/{id}")
+    public String getReservaVisualizar(Model model, @PathVariable Long id) {
+        ReservaDto reserva = reservaService.obterReservaPorId(id);
+        model.addAttribute("reserva", reserva);
+        return "reservavisualizar";
     }
 
 

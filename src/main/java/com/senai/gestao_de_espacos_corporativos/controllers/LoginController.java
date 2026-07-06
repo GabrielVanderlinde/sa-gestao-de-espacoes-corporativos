@@ -2,6 +2,7 @@ package com.senai.gestao_de_espacos_corporativos.controllers;
 
 import com.senai.gestao_de_espacos_corporativos.dtos.UsuarioDto;
 import com.senai.gestao_de_espacos_corporativos.services.LoginService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class LoginController {
 
 
     @PostMapping("/login")
-    public String realizarLogin(String email, String senha, Model model, RedirectAttributes redirectAttributes){ // redirectAttributes retorna um comando, se for só model retorna html
+    public String realizarLogin(String email, String senha, Model model, RedirectAttributes redirectAttributes, HttpSession session){
 
         UsuarioDto usuarioDto = new UsuarioDto();
         usuarioDto.setEmail(email);
@@ -27,11 +28,12 @@ public class LoginController {
         UsuarioDto usuarioDtoRetorno = service.realizarLogin(usuarioDto);
 
         if (usuarioDtoRetorno.getNome() != null) {
-            redirectAttributes.addFlashAttribute("usuario", "Bem-vindo Usuário! -   " + usuarioDtoRetorno.getNome()); // flash mantem volor persistente
+            session.setAttribute("usuarioLogado", usuarioDtoRetorno);
+            redirectAttributes.addFlashAttribute("usuario", "Bem-vindo Usuário! -   " + usuarioDtoRetorno.getNome());
             return "redirect:/home";
         }
         model.addAttribute("erro", "E-mail ou senha inválidos");
-        return "login";  // -- retorna um HTML
+        return "login";
     }
 
 

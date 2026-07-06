@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 public class RecursoDto {
 
@@ -18,7 +17,7 @@ public class RecursoDto {
     @NotBlank(message = "Tipo de recurso é obrigatório")
     private String tipo;
 
-    private List<String> diasSemanaDisponivel;
+    private String diasSemanaDisponivel;
 
     @FutureOrPresent(message = "Data inicial deve ser hoje ou futura")
     private LocalDate dataInicialAgendamento;
@@ -32,7 +31,7 @@ public class RecursoDto {
     public RecursoDto() {
     }
 
-    public RecursoDto(Long id, String descricao, String tipo, List<String> diasSemanaDisponivel, LocalDate dataInicialAgendamento, LocalDate dataFinalAgendamento, LocalTime horaInicialAgendamento, LocalTime horaFinalAgendamento) {
+    public RecursoDto(Long id, String descricao, String tipo, String diasSemanaDisponivel, LocalDate dataInicialAgendamento, LocalDate dataFinalAgendamento, LocalTime horaInicialAgendamento, LocalTime horaFinalAgendamento) {
         this.id = id;
         this.descricao = descricao;
         this.tipo = tipo;
@@ -69,11 +68,11 @@ public class RecursoDto {
         this.tipo = tipo;
     }
 
-    public List<String> getDiasSemanaDisponivel() {
+    public String getDiasSemanaDisponivel() {
         return diasSemanaDisponivel;
     }
 
-    public void setDiasSemanaDisponivel(List<String> diasSemanaDisponivel) {
+    public void setDiasSemanaDisponivel(String diasSemanaDisponivel) {
         this.diasSemanaDisponivel = diasSemanaDisponivel;
     }
 

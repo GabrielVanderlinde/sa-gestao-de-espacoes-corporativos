@@ -13,7 +13,7 @@ document.querySelectorAll('.excluirRecurso').forEach(function(button) {
             //console.log("id=" + id);
 
             // Realize a chamada AJAX para excluir o recurso
-            fetch(`/usuarioexcluir/${id}`, { // =
+            fetch(`/recursoexcluir/${id}`, { // =
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

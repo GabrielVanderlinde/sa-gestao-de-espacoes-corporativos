@@ -1,5 +1,6 @@
 package com.senai.gestao_de_espacos_corporativos.services;
 
+import com.senai.gestao_de_espacos_corporativos.dtos.RecursoDto;
 import com.senai.gestao_de_espacos_corporativos.dtos.ReservaDto;
 import com.senai.gestao_de_espacos_corporativos.entities.RecursoEntity;
 import com.senai.gestao_de_espacos_corporativos.entities.ReservaEntity;
@@ -10,6 +11,8 @@ import com.senai.gestao_de_espacos_corporativos.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +31,11 @@ public class ReservaService {
     }
 
 
-    //-- Inserir Reserva
+    //-- Inserir Reserva com validação de limite (Inovação 3)
     public void inserirReserva(ReservaDto reservaDto){
-
+        if (!podeCriarReserva(reservaDto.getUsuarioId())) {
+            throw new RuntimeException("Limite de reservas atingido. Máximo: " + MAX_RESERVAS_POR_USUARIO + " reservas ativas.");
+        }
         reservaRepository.save(converterDtoParaEntity(reservaDto));
     }
 
@@ -65,34 +70,68 @@ public class ReservaService {
         return reservaDto;
     }
 
-    public void reservaAtualizar(ReservaDto reservaDto) {
+    public void excluir(Long id) {reservaRepository.deleteById(id);
+    }
 
+    //-- Cancelar reserva (regra 7 e 10 do RF04)
+    public void cancelarReserva(ReservaDto reservaDto) {
         Optional<ReservaEntity> reservaOP = reservaRepository.findById(reservaDto.getId());
-
         if (reservaOP.isPresent()) {
-            // usuarioOP.get() --> usuario com os dados do banco de dados
-            // usuarioDto --> dados do usuário que vieram do formulário
-            Optional<UsuarioEntity> usuarioOP = usuarioRepository.findById(reservaDto.getUsuarioId());
-            Optional<RecursoEntity> recursoOP = recursoRepository.findById(reservaDto.getRecursoId());
-
-            UsuarioEntity usuario = usuarioOP.get();
-            RecursoEntity recurso = recursoOP.get();
-
             ReservaEntity reserva = reservaOP.get();
-
-            reserva.setUsuario(usuario);
-            reserva.setRecurso(recurso);
-            reserva.setData(reservaDto.getData());
-            reserva.setHoraInicial(reservaDto.getHoraInicial());
-            reserva.setHoraFinal(reservaDto.getHoraFinal());
-            reserva.setCancelamento(reservaDto.getCancelamento());
+            reserva.setCancelamento(LocalDate.now());
             reserva.setObservacao(reservaDto.getObservacao());
-
             reservaRepository.save(reserva);
         }
     }
 
-    public void excluir(Long id) {reservaRepository.deleteById(id);
+    //=== INOVAÇÃO 1: Verificar se recurso está ocupado agora ===
+    public boolean isRecursoOcupado(Long recursoId) {
+        List<ReservaEntity> reservas = reservaRepository.findByRecursoId(recursoId);
+        LocalDate hoje = LocalDate.now();
+        LocalTime agora = LocalTime.now();
+
+        for (ReservaEntity reserva : reservas) {
+            if (reserva.getData().equals(hoje)
+                    && reserva.getCancelamento() == null
+                    && reserva.getHoraInicial().isBefore(agora)
+                    && reserva.getHoraFinal().isAfter(agora)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //=== INOVAÇÃO 2: Obter horários disponíveis do recurso ===
+    public RecursoDto obterHorariosRecurso(Long recursoId) {
+        Optional<RecursoEntity> recursoOP = recursoRepository.findById(recursoId);
+        if (recursoOP.isPresent()) {
+            RecursoEntity recurso = recursoOP.get();
+            RecursoDto dto = new RecursoDto();
+            dto.setId(recurso.getId());
+            dto.setHoraInicialAgendamento(recurso.getHoraInicialAgendamento());
+            dto.setHoraFinalAgendamento(recurso.getHoraFinalAgendamento());
+            return dto;
+        }
+        return new RecursoDto();
+    }
+
+    //=== INOVAÇÃO 3: Limite de reservas por usuário ===
+    private static final int MAX_RESERVAS_POR_USUARIO = 5;
+
+    public int contarReservasAtivas(Long usuarioId) {
+        List<ReservaEntity> reservas = reservaRepository.findByUsuarioId(usuarioId);
+        long count = reservas.stream()
+                .filter(r -> r.getCancelamento() == null)
+                .count();
+        return (int) count;
+    }
+
+    public boolean podeCriarReserva(Long usuarioId) {
+        return contarReservasAtivas(usuarioId) < MAX_RESERVAS_POR_USUARIO;
+    }
+
+    public int getMaxReservas() {
+        return MAX_RESERVAS_POR_USUARIO;
     }
 
 
@@ -125,7 +164,13 @@ public class ReservaService {
     private ReservaEntity converterDtoParaEntity(ReservaDto reservaDto){
 
         Optional<UsuarioEntity> usuarioOP = usuarioRepository.findById(reservaDto.getUsuarioId());
+        if (usuarioOP.isEmpty()) {
+            throw new RuntimeException("Código de usuário não encontrado no sistema.");
+        }
         Optional<RecursoEntity> recursoOP = recursoRepository.findById(reservaDto.getRecursoId());
+        if (recursoOP.isEmpty()) {
+            throw new RuntimeException("Código de recurso não encontrado no sistema.");
+        }
 
         UsuarioEntity usuario = usuarioOP.get();
         RecursoEntity recurso = recursoOP.get();

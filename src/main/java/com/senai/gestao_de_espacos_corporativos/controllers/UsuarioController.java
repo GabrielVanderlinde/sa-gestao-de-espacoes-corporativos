@@ -24,15 +24,19 @@ public class UsuarioController {
 
 
     @PostMapping("/usuarioinserir")
-    public String inserirUsuario(@Valid @ModelAttribute("usuario") UsuarioDto usuarioDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String inserirUsuario(@Valid @ModelAttribute("usuario") UsuarioDto usuarioDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model){
 
-        if (bindingResult.hasErrors()){ //-- bindingResult devolve o html com msg de erro sem precisar uma nova requisição
+        if (bindingResult.hasErrors()){
             return "usuarioinserir";
         }
-        service.usuarioInserir(usuarioDto);
-        redirectAttributes.addFlashAttribute("mensagem", "Usuário cadastrado com sucesso.");
-
-        return "redirect:/usuariolista";
+        try {
+            service.usuarioInserir(usuarioDto);
+            redirectAttributes.addFlashAttribute("mensagem", "Usuário cadastrado com sucesso.");
+            return "redirect:/usuariolista";
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "usuarioinserir";
+        }
     }
 
     @PostMapping("/usuarioatualizar")

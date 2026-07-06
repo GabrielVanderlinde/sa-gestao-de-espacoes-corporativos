@@ -33,9 +33,22 @@ public class UsuarioService {
     }
 
     public void usuarioInserir(UsuarioDto usuarioDto){
-
+        // Regra RF01: Senha obrigatória na criação
+        if (usuarioDto.getSenha() == null || usuarioDto.getSenha().isEmpty()) {
+            throw new RuntimeException("Senha é obrigatória no cadastro.");
+        }
+        // Regra RF01: Unicidade via e-mail
+        if (repository.findByEmail(usuarioDto.getEmail()).isPresent()) {
+            throw new RuntimeException("E-mail já cadastrado no sistema.");
+        }
+        // Regra RF01: Data de nascimento não pode ter mais de 500 anos
+        if (usuarioDto.getDataNascimento() != null) {
+            int idade = java.time.Period.between(usuarioDto.getDataNascimento(), java.time.LocalDate.now()).getYears();
+            if (idade > 500) {
+                throw new RuntimeException("Data de nascimento inválida: não pode exceder 500 anos.");
+            }
+        }
         repository.save(converterDtoParaEntity(usuarioDto));
-
     }
 
     public UsuarioDto obterUsuarioPorId(Long id){
@@ -57,17 +70,14 @@ public class UsuarioService {
         Optional<UsuarioEntity> usuarioOP = repository.findById(usuarioDto.getId());
 
         if (usuarioOP.isPresent()) {
-            // usuarioOP.get() --> usuario com os dados do banco de dados
-            // usuarioDto --> dados do usuário que vieram do formulário
             UsuarioEntity usuario = usuarioOP.get();
 
             usuario.setNome(usuarioDto.getNome());
             usuario.setEmail(usuarioDto.getEmail());
-            usuario.setSenha(usuarioDto.getSenha());
             usuario.setMatricula(usuarioDto.getMatricula());
             usuario.setDataNascimento(usuarioDto.getDataNascimento());
-            //--Não fazer a atualização da senha quando não vier
-            if (!usuarioDto.getSenha().isEmpty()) {
+            // Senha só atualiza se informada
+            if (usuarioDto.getSenha() != null && !usuarioDto.getSenha().isEmpty()) {
                 usuario.setSenha(usuarioDto.getSenha());
             }
             repository.save(usuario);

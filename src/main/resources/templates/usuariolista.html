@@ -26,7 +26,7 @@
                     <a class="nav-link active" aria-current="page" th:href="@{/usuariolista}">Usuários</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/recursolista}">Epaços</a>
+                    <a class="nav-link" th:href="@{/recursolista}">Espaços</a>
                 </li>
 
                 <li class="nav-item">
@@ -34,7 +34,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/login}">Sair</a>
+                    <a class="nav-link" th:href="@{/logout}">Sair</a>
                 </li>
             </ul>
         </div>
@@ -85,7 +85,7 @@
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(usuarios)}">
-                        <td colspan="4" class="text-center text-secondary py-4">Nenhum usuário cadastrado.</td>
+                        <td colspan="6" class="text-center text-secondary py-4">Nenhum usuário cadastrado.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -94,7 +94,7 @@
     </div>
 
 
-    </div>>
+    </div>
 </main>
 
 <!-- Inclua o script do excluir_usuario.js -->

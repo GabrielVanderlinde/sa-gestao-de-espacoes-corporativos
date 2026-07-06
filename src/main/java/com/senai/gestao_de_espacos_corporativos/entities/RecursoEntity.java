@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
 @Table(name = "recursos")
@@ -23,8 +22,8 @@ public class RecursoEntity {
     @NotBlank(message = "Tipo de recurso é obrigatório")
     private String tipo;
 
-    @ElementCollection
-    private java.util.List<String> diasSemanaDisponivel;
+    @Column(length = 500)
+    private String diasSemanaDisponivel;
 
     @FutureOrPresent(message = "Data inicial deve ser hoje ou futura")
     private java.time.LocalDate dataInicialAgendamento;
@@ -39,7 +38,7 @@ public class RecursoEntity {
     public RecursoEntity() {
     }
 
-    public RecursoEntity(Long id, String descricao, String tipo, List<String> diasSemanaDisponivel, LocalDate dataInicialAgendamento, LocalDate dataFinalAgendamento, LocalTime horaInicialAgendamento, LocalTime horaFinalAgendamento) {
+    public RecursoEntity(Long id, String descricao, String tipo, String diasSemanaDisponivel, LocalDate dataInicialAgendamento, LocalDate dataFinalAgendamento, LocalTime horaInicialAgendamento, LocalTime horaFinalAgendamento) {
         this.id = id;
         this.descricao = descricao;
         this.tipo = tipo;
@@ -76,11 +75,11 @@ public class RecursoEntity {
         this.tipo = tipo;
     }
 
-    public List<String> getDiasSemanaDisponivel() {
+    public String getDiasSemanaDisponivel() {
         return diasSemanaDisponivel;
     }
 
-    public void setDiasSemanaDisponivel(List<String> diasSemanaDisponivel) {
+    public void setDiasSemanaDisponivel(String diasSemanaDisponivel) {
         this.diasSemanaDisponivel = diasSemanaDisponivel;
     }
 
