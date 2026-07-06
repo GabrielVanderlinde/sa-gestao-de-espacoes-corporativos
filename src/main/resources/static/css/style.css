@@ -1,0 +1,65 @@
+.btn-success {
+    background-color: #2ECC71 !important; /* verde claro puro */
+    border-color: #2ECC71 !important;
+}
+
+.btn-success:hover {
+    background-color: #3CB371 !important; /* verde moderno no hover */
+    border-color: #3CB371 !important;
+}
+
+th, td {
+    vertical-align: middle !important; /* centraliza verticalmente */
+    text-align: center; /* centraliza horizontalmente */
+    white-space: normal; /* permite quebra de linha nos títulos */
+}
+/* Exemplo: limitar largura de colunas específicas */
+th:nth-child(2), td:nth-child(2) {
+    width: 240px; /* Data Inicial Agendamento */
+}
+
+body.home-page {
+    background-image: url('http://localhost:8080/images/imagem_fundo.jpg'); /* caminho da sua imagem */
+    background-repeat: no-repeat;       /* não repetir */
+    background-position: center center; /* centralizar */
+    background-attachment: fixed;       /* fica fixa ao rolar a página */
+    background-size: cover;             /* cobre toda a tela */
+}
+.bg-light {
+    background-color: rgba(255, 255, 255, 0.7) !important; /* 70% opaco */
+}
+
+
+
+
+body.usuariolista-page {
+    background-image: url('http://localhost:8080/images/imagem2.jpg'); /* caminho da sua imagem */
+    background-repeat: no-repeat;       /* não repetir */
+    background-position: center center; /* centralizar */
+    background-attachment: fixed;       /* fica fixa ao rolar a página */
+    background-size: cover;             /* cobre toda a tela */
+}
+
+
+body.reservalista-page {
+    background-image: url('http://localhost:8080/images/imagem3.png'); /* caminho da sua imagem */
+    background-repeat: no-repeat;       /* não repetir */
+    background-position: center center; /* centralizar */
+    background-attachment: fixed;       /* fica fixa ao rolar a página */
+    background-size: cover;             /* cobre toda a tela */
+}
+
+
+body.recursolista-page {
+    background-image: url('http://localhost:8080/images/imagem5.png'); /* caminho da sua imagem */
+    background-repeat: no-repeat;       /* não repetir */
+    background-position: center center; /* centralizar */
+    background-attachment: fixed;       /* fica fixa ao rolar a página */
+    background-size: cover;             /* cobre toda a tela */
+}
+
+.p-5.mb-4.bg-light.rounded-3 {
+    background-color: rgba(255, 255, 255, 0.7); /* branco com 70% opacidade */
+}
+
+
