@@ -10,21 +10,22 @@ import com.senai.gestao_de_espacos_corporativos.repositories.ReservaRepository;
 import com.senai.gestao_de_espacos_corporativos.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import java.time.temporal.ChronoUnit;
-
 @Service
 public class ReservaService {
 
+    //Limite de reservas por usuário ===
+    private static final int MAX_RESERVAS_POR_USUARIO = 5;
     private final ReservaRepository reservaRepository;
     private final UsuarioRepository usuarioRepository;
     private final RecursoRepository recursoRepository;
+
 
     public ReservaService(ReservaRepository reservaRepository, UsuarioRepository usuarioRepository, RecursoRepository recursoRepository) {
         this.reservaRepository = reservaRepository;
@@ -32,9 +33,8 @@ public class ReservaService {
         this.recursoRepository = recursoRepository;
     }
 
-
     //-- Inserir Reserva com validação de limite (Inovação 3) e conflito de agendamento (RF06)
-    public void inserirReserva(ReservaDto reservaDto){
+    public void inserirReserva(ReservaDto reservaDto) {
         if (!podeCriarReserva(reservaDto.getUsuarioId())) {
             throw new RuntimeException("Limite de reservas atingido. Máximo: " + MAX_RESERVAS_POR_USUARIO + " reservas ativas.");
         }
@@ -45,30 +45,27 @@ public class ReservaService {
         reservaRepository.save(converterDtoParaEntity(reservaDto));
     }
 
-
-
     //-- Listar Reservas
-    public List<ReservaDto> obterListaReservas(){
+    public List<ReservaDto> obterListaReservas() {
 
         List<ReservaDto> listaDto = new ArrayList<>();
 
         List<ReservaEntity> listaReserva = reservaRepository.findAll();
 
-        for(ReservaEntity reservaEntity : listaReserva){
+        for (ReservaEntity reservaEntity : listaReserva) {
 
             listaDto.add(converterEntityParaDto(reservaEntity));
         }
         return listaDto;
     }
 
-
-    public ReservaDto obterReservaPorId(Long id){
+    public ReservaDto obterReservaPorId(Long id) {
 
         ReservaDto reservaDto = new ReservaDto();
         //-- Vai na base de dados obter o usuario pelo ID
         Optional<ReservaEntity> reservaOP = reservaRepository.findById(id);
 
-        if (reservaOP.isPresent()){
+        if (reservaOP.isPresent()) {
             //--Converte o entity para dto
             reservaDto = converterEntityParaDto(reservaOP.get());
         }
@@ -76,7 +73,8 @@ public class ReservaService {
         return reservaDto;
     }
 
-    public void excluir(Long id) {reservaRepository.deleteById(id);
+    public void excluir(Long id) {
+        reservaRepository.deleteById(id);
     }
 
     //-- Cancelar reserva
@@ -100,7 +98,7 @@ public class ReservaService {
         List<ReservaEntity> reservas = reservaRepository.findByRecursoId(recursoId);
         for (ReservaEntity reserva : reservas) {
             // Ignorar a própria reserva (para cancelamento sem conflito)
-            if (reservaIdExcluir != null && reserva.getId().equals(reservaIdExcluir)) {
+            if (reserva.getId().equals(reservaIdExcluir)) {
                 continue;
             }
             // Ignorar reservas canceladas
@@ -149,9 +147,6 @@ public class ReservaService {
         return new RecursoDto();
     }
 
-    //Limite de reservas por usuário ===
-    private static final int MAX_RESERVAS_POR_USUARIO = 5;
-
     public int contarReservasAtivas(Long usuarioId) {
         List<ReservaEntity> reservas = reservaRepository.findByUsuarioId(usuarioId);
         long count = reservas.stream()
@@ -169,14 +164,8 @@ public class ReservaService {
     }
 
 
-
-
-
-
-
-
     //Converter Entity para Dto - private só o service usa
-    private ReservaDto converterEntityParaDto(ReservaEntity reserva){
+    private ReservaDto converterEntityParaDto(ReservaEntity reserva) {
 
         ReservaDto reservaDto = new ReservaDto();
 
@@ -194,7 +183,7 @@ public class ReservaService {
 
 
     //Converter Dto para Entity - private só o service usa
-    private ReservaEntity converterDtoParaEntity(ReservaDto reservaDto){
+    private ReservaEntity converterDtoParaEntity(ReservaDto reservaDto) {
 
         Optional<UsuarioEntity> usuarioOP = usuarioRepository.findById(reservaDto.getUsuarioId());
         if (usuarioOP.isEmpty()) {

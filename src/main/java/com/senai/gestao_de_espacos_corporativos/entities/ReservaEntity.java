@@ -38,7 +38,6 @@ public class ReservaEntity {
     private String observacao;
 
 
-
     public ReservaEntity() {
     }
 

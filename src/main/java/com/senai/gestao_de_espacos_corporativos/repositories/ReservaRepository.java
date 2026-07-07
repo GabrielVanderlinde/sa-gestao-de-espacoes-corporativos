@@ -10,6 +10,7 @@ import java.util.List;
 public interface ReservaRepository extends JpaRepository<ReservaEntity, Long> {
 
     List<ReservaEntity> findByUsuarioId(Long usuarioId);
+
     List<ReservaEntity> findByRecursoId(Long recursoId);
 
 

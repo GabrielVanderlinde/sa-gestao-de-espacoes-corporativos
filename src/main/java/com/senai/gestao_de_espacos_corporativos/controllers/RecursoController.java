@@ -1,7 +1,6 @@
 package com.senai.gestao_de_espacos_corporativos.controllers;
 
 import com.senai.gestao_de_espacos_corporativos.dtos.RecursoDto;
-import com.senai.gestao_de_espacos_corporativos.dtos.UsuarioDto;
 import com.senai.gestao_de_espacos_corporativos.services.RecursoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +25,9 @@ public class RecursoController {
 
     //-- cadastrar novo recurso
     @PostMapping("/recursoinserir")
-    public String cadastrarRecurso(@Valid @ModelAttribute("recurso")RecursoDto recursoDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String cadastrarRecurso(@Valid @ModelAttribute("recurso") RecursoDto recursoDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        if (bindingResult.hasErrors()){ //-- bindingResult devolve o html com msg de erro sem precisar uma nova requisição
+        if (bindingResult.hasErrors()) { //-- bindingResult devolve o html com msg de erro sem precisar uma nova requisição
             return "recursoinserir";
         }
 
@@ -57,7 +56,6 @@ public class RecursoController {
         service.excluir(id);
         return ResponseEntity.ok().body("Excluido");
     }
-
 
 
 }

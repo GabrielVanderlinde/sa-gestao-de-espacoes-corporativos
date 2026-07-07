@@ -23,9 +23,9 @@ public class ReservaController {
 
     //-- cadastrar nova reserva com validação de limite
     @PostMapping("/reservainserir")
-    public String cadastrarReserva(@Valid @ModelAttribute("reserva")ReservaDto reservaDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model){
+    public String cadastrarReserva(@Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "reservainserir";
         }
 
@@ -44,7 +44,7 @@ public class ReservaController {
     //-- cancelar reserva
     @PostMapping("/reservacancelar")
     public String cancelarReserva(@Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult,
-                                   RedirectAttributes redirectAttributes, Model model) {
+                                  RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
             return "reservaatualizar";
         }

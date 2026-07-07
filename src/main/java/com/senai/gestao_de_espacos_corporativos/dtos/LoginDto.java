@@ -18,7 +18,8 @@ public class LoginDto {
     public LoginDto() {
     }
 
-    public LoginDto(String email, String senha) {}
+    public LoginDto(String email, String senha) {
+    }
 
 
     // getters e setters

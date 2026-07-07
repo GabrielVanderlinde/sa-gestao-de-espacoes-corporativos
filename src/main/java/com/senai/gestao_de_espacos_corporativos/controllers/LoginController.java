@@ -19,7 +19,7 @@ public class LoginController {
 
 
     @PostMapping("/login")
-    public String realizarLogin(String email, String senha, Model model, RedirectAttributes redirectAttributes, HttpSession session){
+    public String realizarLogin(String email, String senha, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 
         UsuarioDto usuarioDto = new UsuarioDto();
         usuarioDto.setEmail(email);

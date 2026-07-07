@@ -19,20 +19,20 @@ public class UsuarioService {
     }
 
 
-    public List<UsuarioDto> obterListaUsuarios(){
+    public List<UsuarioDto> obterListaUsuarios() {
 
         List<UsuarioDto> listaDto = new ArrayList<>();
 
         List<UsuarioEntity> listaUsuario = repository.findAll();
 
-        for(UsuarioEntity usuarioEntity : listaUsuario){
+        for (UsuarioEntity usuarioEntity : listaUsuario) {
 
             listaDto.add(converterEntityParaDto(usuarioEntity));
         }
         return listaDto;
     }
 
-    public void usuarioInserir(UsuarioDto usuarioDto){
+    public void usuarioInserir(UsuarioDto usuarioDto) {
         // Senha obrigatória na criação
         if (usuarioDto.getSenha() == null || usuarioDto.getSenha().isEmpty()) {
             throw new RuntimeException("Senha é obrigatória no cadastro.");
@@ -51,13 +51,13 @@ public class UsuarioService {
         repository.save(converterDtoParaEntity(usuarioDto));
     }
 
-    public UsuarioDto obterUsuarioPorId(Long id){
+    public UsuarioDto obterUsuarioPorId(Long id) {
 
         UsuarioDto usuarioDto = new UsuarioDto();
         //-- Vai na base de dados obter o usuario pelo ID
         Optional<UsuarioEntity> usuarioOP = repository.findById(id);
 
-        if (usuarioOP.isPresent()){
+        if (usuarioOP.isPresent()) {
             //--Converte o entity para dto
             usuarioDto = converterEntityParaDto(usuarioOP.get());
         }
@@ -90,22 +90,8 @@ public class UsuarioService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //--  novo - converter Entity para Dto - private só o service usa
-    private UsuarioDto converterEntityParaDto(UsuarioEntity usuario){
+    private UsuarioDto converterEntityParaDto(UsuarioEntity usuario) {
 
         UsuarioDto usuarioDto = new UsuarioDto();
 
@@ -118,7 +104,7 @@ public class UsuarioService {
     }
 
     //-- novo - converter Dto para Entity - private só o service usa
-    private UsuarioEntity converterDtoParaEntity(UsuarioDto usuarioDto){
+    private UsuarioEntity converterDtoParaEntity(UsuarioDto usuarioDto) {
 
         UsuarioEntity usuarioEntity = new UsuarioEntity();
 
@@ -130,9 +116,6 @@ public class UsuarioService {
         usuarioEntity.setDataNascimento(usuarioDto.getDataNascimento());
         return usuarioEntity;
     }
-
-
-
 
 
 }

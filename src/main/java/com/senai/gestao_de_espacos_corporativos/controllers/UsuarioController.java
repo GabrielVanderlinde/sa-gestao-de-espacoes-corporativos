@@ -24,9 +24,9 @@ public class UsuarioController {
 
 
     @PostMapping("/usuarioinserir")
-    public String inserirUsuario(@Valid @ModelAttribute("usuario") UsuarioDto usuarioDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model){
+    public String inserirUsuario(@Valid @ModelAttribute("usuario") UsuarioDto usuarioDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "usuarioinserir";
         }
         try {
@@ -58,9 +58,6 @@ public class UsuarioController {
         service.excluir(id);
         return ResponseEntity.ok().body("Excluido");
     }
-
-
-
 
 
 }

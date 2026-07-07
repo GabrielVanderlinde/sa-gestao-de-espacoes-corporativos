@@ -2,16 +2,16 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>Lista de Espaços</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body class="recursolista-page">
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container">
         <a class="navbar-brand" th:href="@{/home}">Gestão de Espaços Corporativos</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+        <button class="navbar-toggler" data-bs-target="#menuPrincipal" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="menuPrincipal">
@@ -28,60 +28,64 @@
 
 <main class="container py-4">
     <div class="p-5 mb-4 bg-light rounded-3">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-        <div>
-            <h1 class="h3 mb-1">Espaços</h1>
-            <p class="text-dark mb-0">Lista de espaços cadastrados no sistema.</p>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <h1 class="h3 mb-1">Espaços</h1>
+                <p class="text-dark mb-0">Lista de espaços cadastrados no sistema.</p>
+            </div>
+            <a class="btn btn-primary" th:href="@{/recursoinserir}">Novo Espaço</a>
         </div>
-        <a class="btn btn-primary" th:href="@{/recursoinserir}">Novo Espaço</a>
-    </div>
 
-    <div class="alert alert-success" role="alert" th:if="${mensagem}" th:text="${mensagem}"></div>
+        <div class="alert alert-success" role="alert" th:if="${mensagem}" th:text="${mensagem}"></div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle mb-0">
-                    <thead class="table-primary">
-                    <tr>
-                        <th>ID</th>
-                        <th>Descrição</th>
-                        <th>Tipo</th>
-                        <th>Dias Disponível</th>
-                        <th>Data Inicial</th>
-                        <th>Data Final</th>
-                        <th>Hora Inicial</th>
-                        <th>Hora Final</th>
-                        <th>Status</th>
-                        <th class="text-end">Ações</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="recurso : ${recursos}">
-                        <td th:text="${recurso.id}"></td>
-                        <td th:text="${recurso.descricao}"></td>
-                        <td th:text="${recurso.tipo}"></td>
-                        <td th:text="${recurso.diasSemanaDisponivel}"></td>
-                        <td th:text="${recurso.dataInicialAgendamento}"></td>
-                        <td th:text="${recurso.dataFinalAgendamento}"></td>
-                        <td th:text="${recurso.horaInicialAgendamento}"></td>
-                        <td th:text="${recurso.horaFinalAgendamento}"></td>
-                        <td>
-                            <span class="badge status-recurso" th:id="'status-' + ${recurso.id}">Verificando...</span>
-                        </td>
-                        <td class="text-end">
-                            <a class="btn btn-sm btn-outline-primary" th:href="@{/recursoatualizar/{id}(id=${recurso.id})}">Editar</a>
-                            <button th:data-id="${recurso.id}" class="excluirRecurso btn btn-sm btn-outline-danger">Excluir</button>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(recursos)}">
-                        <td colspan="10" class="text-center text-secondary py-4">Nenhum Espaço cadastrado.</td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Descrição</th>
+                            <th>Tipo</th>
+                            <th>Dias Disponível</th>
+                            <th>Data Inicial</th>
+                            <th>Data Final</th>
+                            <th>Hora Inicial</th>
+                            <th>Hora Final</th>
+                            <th>Status</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="recurso : ${recursos}">
+                            <td th:text="${recurso.id}"></td>
+                            <td th:text="${recurso.descricao}"></td>
+                            <td th:text="${recurso.tipo}"></td>
+                            <td th:text="${recurso.diasSemanaDisponivel}"></td>
+                            <td th:text="${recurso.dataInicialAgendamento}"></td>
+                            <td th:text="${recurso.dataFinalAgendamento}"></td>
+                            <td th:text="${recurso.horaInicialAgendamento}"></td>
+                            <td th:text="${recurso.horaFinalAgendamento}"></td>
+                            <td>
+                                <span class="badge status-recurso"
+                                      th:id="'status-' + ${recurso.id}">Verificando...</span>
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   th:href="@{/recursoatualizar/{id}(id=${recurso.id})}">Editar</a>
+                                <button class="excluirRecurso btn btn-sm btn-outline-danger" th:data-id="${recurso.id}">
+                                    Excluir
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(recursos)}">
+                            <td class="text-center text-secondary py-4" colspan="10">Nenhum Espaço cadastrado.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </main>
 
@@ -89,25 +93,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// INOVAÇÃO 1: Indicador visual de status (Verde=Livre, Vermelho=Ocupado)
-document.querySelectorAll('.status-recurso').forEach(function(badge) {
-    var recursoId = badge.id.replace('status-', '');
-    fetch('/api/recurso/' + recursoId + '/status')
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-            if (data.ocupado) {
-                badge.textContent = 'Ocupado';
-                badge.classList.add('bg-danger');
-            } else {
-                badge.textContent = 'Livre';
-                badge.classList.add('bg-success');
-            }
-        })
-        .catch(function() {
-            badge.textContent = 'Indisponível';
-            badge.classList.add('bg-secondary');
-        });
-});
+    // INOVAÇÃO 1: Indicador visual de status (Verde=Livre, Vermelho=Ocupado)
+    document.querySelectorAll('.status-recurso').forEach(function(badge) {
+        var recursoId = badge.id.replace('status-', '');
+        fetch('/api/recurso/' + recursoId + '/status')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.ocupado) {
+                    badge.textContent = 'Ocupado';
+                    badge.classList.add('bg-danger');
+                } else {
+                    badge.textContent = 'Livre';
+                    badge.classList.add('bg-success');
+                }
+            })
+            .catch(function() {
+                badge.textContent = 'Indisponível';
+                badge.classList.add('bg-secondary');
+            });
+    });
 </script>
 
 <footer class="footer">

@@ -16,13 +16,13 @@ public class LoginService {
         this.repository = repository;
     }
 
-    public UsuarioDto realizarLogin(UsuarioDto usuarioDto ){
+    public UsuarioDto realizarLogin(UsuarioDto usuarioDto) {
 
         Optional<UsuarioEntity> usuarioOP = repository.findByEmailAndSenha(usuarioDto.getEmail(), usuarioDto.getSenha());
 
         UsuarioDto usuarioDtoRetorno = new UsuarioDto();
 
-        if (usuarioOP.isPresent()){
+        if (usuarioOP.isPresent()) {
             //usuarioOP.get() = objeto do tipo usuarioEntity
             //usuarioDtoRetorno = usuario do tipo usuarioDto
             usuarioDtoRetorno = converterEntityParaDto(usuarioOP.get()); // usando metodo exclusivo do service para converter Dtos e Entitys sem precisar repetir quando precisar
@@ -32,12 +32,9 @@ public class LoginService {
     }
 
 
-
-
-
     //----------------------------------------------------------------------------
     //--  novo - converter Entity para Dto - private só o service usa
-    private UsuarioDto converterEntityParaDto(UsuarioEntity usuario){
+    private UsuarioDto converterEntityParaDto(UsuarioEntity usuario) {
 
         UsuarioDto usuarioDto = new UsuarioDto();
 
@@ -49,7 +46,7 @@ public class LoginService {
     }
 
     //-- novo - converter Dto para Entity - private só o service usa
-    private UsuarioEntity converterDtoParaEntity(UsuarioDto usuarioDto){
+    private UsuarioEntity converterDtoParaEntity(UsuarioDto usuarioDto) {
 
         UsuarioEntity usuarioEntity = new UsuarioEntity();
 
@@ -60,9 +57,6 @@ public class LoginService {
         return usuarioEntity;
 
     }
-
-
-
 
 
 }

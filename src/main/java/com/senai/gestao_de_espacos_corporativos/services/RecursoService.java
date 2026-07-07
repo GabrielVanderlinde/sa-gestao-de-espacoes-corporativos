@@ -27,26 +27,26 @@ public class RecursoService {
 
 
     //-- Listar Recursos
-    public List<RecursoDto> obterListaRecursos(){
+    public List<RecursoDto> obterListaRecursos() {
 
         List<RecursoDto> listaDto = new ArrayList<>();
 
         List<RecursoEntity> listaRecurso = repository.findAll();
 
-        for(RecursoEntity recursoEntity: listaRecurso){
+        for (RecursoEntity recursoEntity : listaRecurso) {
 
             listaDto.add(converterEntityParaDto(recursoEntity));
         }
         return listaDto;
     }
 
-    public RecursoDto obterRecursoPorId(Long id){
+    public RecursoDto obterRecursoPorId(Long id) {
 
         RecursoDto recursoDto = new RecursoDto();
         //-- Vai na base de dados obter o usuario pelo ID
         Optional<RecursoEntity> recursoOP = repository.findById(id);
 
-        if (recursoOP.isPresent()){
+        if (recursoOP.isPresent()) {
             //--Converte o entity para dto
             recursoDto = converterEntityParaDto(recursoOP.get());
         }
@@ -80,14 +80,8 @@ public class RecursoService {
     }
 
 
-
-
-
-
-
-
     //--  novo - converter Entity para Dto - private só o service usa
-    private RecursoDto converterEntityParaDto(RecursoEntity recurso){
+    private RecursoDto converterEntityParaDto(RecursoEntity recurso) {
 
         RecursoDto recursoDto = new RecursoDto();
 
@@ -103,7 +97,7 @@ public class RecursoService {
     }
 
     //-- novo - converter Dto para Entity - private só o service usa
-    private RecursoEntity converterDtoParaEntity(RecursoDto recursoDto){
+    private RecursoEntity converterDtoParaEntity(RecursoDto recursoDto) {
 
         RecursoEntity recursoEntity = new RecursoEntity();
 
@@ -118,8 +112,6 @@ public class RecursoService {
 
         return recursoEntity;
     }
-
-
 
 
 }
