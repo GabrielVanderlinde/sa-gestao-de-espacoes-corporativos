@@ -86,7 +86,6 @@ public class RecursoService {
 
 
 
-    //----------------------------------------------------------------------------
     //--  novo - converter Entity para Dto - private só o service usa
     private RecursoDto converterEntityParaDto(RecursoEntity recurso){
 

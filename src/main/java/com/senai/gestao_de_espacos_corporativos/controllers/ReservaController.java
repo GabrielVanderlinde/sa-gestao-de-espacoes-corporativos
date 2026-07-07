@@ -44,13 +44,18 @@ public class ReservaController {
     //-- cancelar reserva
     @PostMapping("/reservacancelar")
     public String cancelarReserva(@Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult,
-                                   RedirectAttributes redirectAttributes) {
+                                   RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
             return "reservaatualizar";
         }
-        service.cancelarReserva(reservaDto);
-        redirectAttributes.addFlashAttribute("mensagem", "Reserva cancelada com sucesso.");
-        return "redirect:/reservalista";
+        try {
+            service.cancelarReserva(reservaDto);
+            redirectAttributes.addFlashAttribute("mensagem", "Reserva cancelada com sucesso.");
+            return "redirect:/reservalista";
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "reservaatualizar";
+        }
     }
 
 
@@ -60,14 +65,14 @@ public class ReservaController {
         return ResponseEntity.ok().body("Excluido");
     }
 
-    //=== INOVAÇÃO: Endpoint REST para horários do recurso (horário automático) ===
+    //Endpoint REST para horários do recurso (horário automático)
     @GetMapping("/api/recurso/{id}/horarios")
     @ResponseBody
     public RecursoDto obterHorariosRecurso(@PathVariable Long id) {
         return service.obterHorariosRecurso(id);
     }
 
-    //=== INOVAÇÃO: Endpoint REST para status do recurso (indicador visual) ===
+    //Endpoint REST para status do recurso (indicador visual)
     @GetMapping("/api/recurso/{id}/status")
     @ResponseBody
     public java.util.Map<String, Object> obterStatusRecurso(@PathVariable Long id) {
@@ -75,7 +80,7 @@ public class ReservaController {
         return java.util.Map.of("ocupado", ocupado, "status", ocupado ? "Ocupado" : "Livre");
     }
 
-    //=== INOVAÇÃO: Endpoint REST para contar reservas do usuário ===
+    //Endpoint REST para contar reservas do usuário
     @GetMapping("/api/usuario/{id}/reservas")
     @ResponseBody
     public java.util.Map<String, Object> contarReservasUsuario(@PathVariable Long id) {

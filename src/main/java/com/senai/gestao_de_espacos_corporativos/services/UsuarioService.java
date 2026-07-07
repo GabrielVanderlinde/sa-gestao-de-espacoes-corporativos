@@ -33,15 +33,15 @@ public class UsuarioService {
     }
 
     public void usuarioInserir(UsuarioDto usuarioDto){
-        // Regra RF01: Senha obrigatória na criação
+        // Senha obrigatória na criação
         if (usuarioDto.getSenha() == null || usuarioDto.getSenha().isEmpty()) {
             throw new RuntimeException("Senha é obrigatória no cadastro.");
         }
-        // Regra RF01: Unicidade via e-mail
+        // Unicidade via e-mail
         if (repository.findByEmail(usuarioDto.getEmail()).isPresent()) {
             throw new RuntimeException("E-mail já cadastrado no sistema.");
         }
-        // Regra RF01: Data de nascimento não pode ter mais de 500 anos
+        // Data de nascimento não pode ter mais de 500 anos
         if (usuarioDto.getDataNascimento() != null) {
             int idade = java.time.Period.between(usuarioDto.getDataNascimento(), java.time.LocalDate.now()).getYears();
             if (idade > 500) {
@@ -104,7 +104,6 @@ public class UsuarioService {
 
 
 
-    //----------------------------------------------------------------------------
     //--  novo - converter Entity para Dto - private só o service usa
     private UsuarioDto converterEntityParaDto(UsuarioEntity usuario){
 

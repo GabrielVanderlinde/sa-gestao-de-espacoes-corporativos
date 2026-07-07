@@ -1,7 +1,3 @@
--- ============================================
--- SCRIPT DE CRIAÇÃO DO BANCO DE DADOS
--- Gestão de Espaços Corporativos
--- ============================================
 
 -- Criar banco de dados
 CREATE DATABASE IF NOT EXISTS espacos_corporativos;
@@ -49,15 +45,8 @@ CREATE TABLE IF NOT EXISTS reservas (
     FOREIGN KEY (recurso_id) REFERENCES recursos(id)
 );
 
--- ============================================
--- DADOS INICIAIS (OPCIONAL)
--- ============================================
-
 -- Usuário admin para teste (senha: admin123)
 INSERT INTO usuarios (nome, email, senha, matricula, data_nascimento)
 VALUES ('Administrador', 'admin@email.com', 'admin123', 'ADM001', '1990-01-15')
 ON DUPLICATE KEY UPDATE nome = nome;
 
--- ============================================
--- FIM DO SCRIPT
--- ============================================
