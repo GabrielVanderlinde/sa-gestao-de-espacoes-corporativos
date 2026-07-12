@@ -44,6 +44,7 @@
 
             <div class="card shadow-sm">
                 <div class="card-body">
+                    <div class="alert alert-danger" th:if="${erro}" th:text="${erro}"></div>
                     <form method="post" th:action="@{/recursoinserir}" th:object="${recurso}">
 
                         <div class="mb-3">

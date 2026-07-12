@@ -10,11 +10,13 @@ public class ReservaDto {
 
     private Long id;
 
-    //---Chaves FK
     @NotNull(message = "Usuário é obrigatório")
     private Long usuarioId;
     @NotNull(message = "Recurso é obrigatório")
     private Long recursoId;
+
+    private String nomeUsuario;
+    private String descricaoRecurso;
 
     @NotNull(message = "Data da reserva é obrigatória")
     private LocalDate data;
@@ -32,19 +34,6 @@ public class ReservaDto {
     public ReservaDto() {
     }
 
-    public ReservaDto(Long id, String observacao, LocalDate cancelamento, LocalTime horaFinal, LocalTime horaInicial, LocalDate data, Long recursoId, Long usuarioId) {
-        this.id = id;
-        this.observacao = observacao;
-        this.cancelamento = cancelamento;
-        this.horaFinal = horaFinal;
-        this.horaInicial = horaInicial;
-        this.data = data;
-        this.recursoId = recursoId;
-        this.usuarioId = usuarioId;
-    }
-
-
-    // getters e setters
     public Long getId() {
         return id;
     }
@@ -67,6 +56,22 @@ public class ReservaDto {
 
     public void setRecursoId(Long recursoId) {
         this.recursoId = recursoId;
+    }
+
+    public String getNomeUsuario() {
+        return nomeUsuario;
+    }
+
+    public void setNomeUsuario(String nomeUsuario) {
+        this.nomeUsuario = nomeUsuario;
+    }
+
+    public String getDescricaoRecurso() {
+        return descricaoRecurso;
+    }
+
+    public void setDescricaoRecurso(String descricaoRecurso) {
+        this.descricaoRecurso = descricaoRecurso;
     }
 
     public LocalDate getData() {
@@ -108,6 +113,5 @@ public class ReservaDto {
     public void setObservacao(String observacao) {
         this.observacao = observacao;
     }
-
 
 }

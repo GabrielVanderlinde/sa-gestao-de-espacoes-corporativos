@@ -23,18 +23,21 @@ public class RecursoController {
     }
 
 
-    //-- cadastrar novo recurso
     @PostMapping("/recursoinserir")
-    public String cadastrarRecurso(@Valid @ModelAttribute("recurso") RecursoDto recursoDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String cadastrarRecurso(@Valid @ModelAttribute("recurso") RecursoDto recursoDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
-        if (bindingResult.hasErrors()) { //-- bindingResult devolve o html com msg de erro sem precisar uma nova requisição
+        if (bindingResult.hasErrors()) {
             return "recursoinserir";
         }
 
-        service.inserirRecurso(recursoDto);
-        redirectAttributes.addFlashAttribute("mensagem", "Espaço cadastrado com sucesso.");
-
-        return "redirect:/recursolista";
+        try {
+            service.inserirRecurso(recursoDto);
+            redirectAttributes.addFlashAttribute("mensagem", "Espaço cadastrado com sucesso.");
+            return "redirect:/recursolista";
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "recursoinserir";
+        }
     }
 
     @PostMapping("/recursoatualizar")
@@ -44,10 +47,15 @@ public class RecursoController {
         if (bindingResult.hasErrors()) {
             return "recursoatualizar";
         }
-        redirectAttributes.addFlashAttribute("mensagem", "Espaço atualizado com sucesso.");
-        service.recursoAtualizar(recursoDto);
 
-        return "redirect:/recursolista";
+        try {
+            service.recursoAtualizar(recursoDto);
+            redirectAttributes.addFlashAttribute("mensagem", "Espaço atualizado com sucesso.");
+            return "redirect:/recursolista";
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "recursoatualizar";
+        }
     }
 
 

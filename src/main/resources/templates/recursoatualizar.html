@@ -44,6 +44,7 @@
 
             <div class="card shadow-sm">
                 <div class="card-body">
+                    <div class="alert alert-danger" th:if="${erro}" th:text="${erro}"></div>
                     <form method="post" th:action="@{/recursoatualizar}" th:object="${recurso}">
                         <input th:field="*{id}" type="hidden">
 

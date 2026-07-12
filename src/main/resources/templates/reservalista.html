@@ -60,13 +60,12 @@
                         <tbody>
                         <tr th:each="reserva : ${reservas}">
                             <td th:text="${reserva.id}"></td>
-                            <td th:text="${reserva.usuarioId}"></td>
-                            <td th:text="${reserva.recursoId}"></td>
+                            <td th:text="${reserva.nomeUsuario}"></td>
+                            <td th:text="${reserva.descricaoRecurso}"></td>
                             <td th:text="${reserva.data}"></td>
                             <td th:text="${reserva.horaInicial}"></td>
                             <td th:text="${reserva.horaFinal}"></td>
                             <td>
-                                <!-- INOVAÇÃO 1: Indicador visual de status da reserva -->
                                 <span class="badge bg-secondary"
                                       th:if="${reserva.cancelamento != null}">Cancelada</span>
                                 <span class="badge bg-success" th:unless="${reserva.cancelamento != null}">Ativa</span>

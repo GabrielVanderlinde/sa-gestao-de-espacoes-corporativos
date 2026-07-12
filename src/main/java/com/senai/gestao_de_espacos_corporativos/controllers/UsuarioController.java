@@ -46,10 +46,15 @@ public class UsuarioController {
         if (bindingResult.hasErrors()) {
             return "usuarioatualizar";
         }
-        redirectAttributes.addFlashAttribute("mensagem", "Usuário atualizado com sucesso.");
-        service.usuarioAtualizar(usuarioDto);
 
-        return "redirect:/usuariolista";
+        try {
+            service.usuarioAtualizar(usuarioDto);
+            redirectAttributes.addFlashAttribute("mensagem", "Usuário atualizado com sucesso.");
+            return "redirect:/usuariolista";
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "usuarioatualizar";
+        }
     }
 
 

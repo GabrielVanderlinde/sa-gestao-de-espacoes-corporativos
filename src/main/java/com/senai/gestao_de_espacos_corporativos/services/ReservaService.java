@@ -281,6 +281,8 @@ public class ReservaService {
         reservaDto.setId(reserva.getId());
         reservaDto.setUsuarioId(reserva.getUsuario().getId());
         reservaDto.setRecursoId(reserva.getRecurso().getId());
+        reservaDto.setNomeUsuario(reserva.getUsuario().getNome());
+        reservaDto.setDescricaoRecurso(reserva.getRecurso().getDescricao());
         reservaDto.setData(reserva.getData());
         reservaDto.setHoraInicial(reserva.getHoraInicial());
         reservaDto.setHoraFinal(reserva.getHoraFinal());
