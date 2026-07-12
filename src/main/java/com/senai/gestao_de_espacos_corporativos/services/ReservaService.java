@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,6 @@ import java.util.Optional;
 @Service
 public class ReservaService {
 
-    //Limite de reservas por usuário ===
     private static final int MAX_RESERVAS_POR_USUARIO = 5;
     private final ReservaRepository reservaRepository;
     private final UsuarioRepository usuarioRepository;
@@ -33,90 +31,78 @@ public class ReservaService {
         this.recursoRepository = recursoRepository;
     }
 
-    //-- Inserir Reserva com validação de limite (Inovação 3) e conflito de agendamento (RF06)
-    public void inserirReserva(ReservaDto reservaDto) {
+
+    //-- Inserir Reserva com validação de limite (Inovação 3)
+    public void inserirReserva(ReservaDto reservaDto){
         if (!podeCriarReserva(reservaDto.getUsuarioId())) {
             throw new RuntimeException("Limite de reservas atingido. Máximo: " + MAX_RESERVAS_POR_USUARIO + " reservas ativas.");
-        }
-        if (existeConflitoAgendamento(reservaDto.getRecursoId(), reservaDto.getData(),
-                reservaDto.getHoraInicial(), reservaDto.getHoraFinal(), null)) {
-            throw new RuntimeException("Conflito de agendamento: este recurso já está reservado para esta data e horário.");
         }
         reservaRepository.save(converterDtoParaEntity(reservaDto));
     }
 
+
+
     //-- Listar Reservas
-    public List<ReservaDto> obterListaReservas() {
+    public List<ReservaDto> obterListaReservas(){
 
         List<ReservaDto> listaDto = new ArrayList<>();
 
         List<ReservaEntity> listaReserva = reservaRepository.findAll();
 
-        for (ReservaEntity reservaEntity : listaReserva) {
+        for(ReservaEntity reservaEntity : listaReserva){
 
             listaDto.add(converterEntityParaDto(reservaEntity));
         }
         return listaDto;
     }
 
-    public ReservaDto obterReservaPorId(Long id) {
+
+    public ReservaDto obterReservaPorId(Long id){
 
         ReservaDto reservaDto = new ReservaDto();
-        //-- Vai na base de dados obter o usuario pelo ID
         Optional<ReservaEntity> reservaOP = reservaRepository.findById(id);
 
-        if (reservaOP.isPresent()) {
-            //--Converte o entity para dto
+        if (reservaOP.isPresent()){
             reservaDto = converterEntityParaDto(reservaOP.get());
         }
-        //--retorna o Dto para o controller
         return reservaDto;
     }
 
-    public void excluir(Long id) {
-        reservaRepository.deleteById(id);
-    }
+    public void reservaAtualizar(ReservaDto reservaDto) {
 
-    //-- Cancelar reserva
-    public void cancelarReserva(ReservaDto reservaDto) {
         Optional<ReservaEntity> reservaOP = reservaRepository.findById(reservaDto.getId());
+
         if (reservaOP.isPresent()) {
-            ReservaEntity reserva = reservaOP.get();
-            // cancelamento só pode ocorrer 1 dia antes da data agendada
-            long diasAteReserva = ChronoUnit.DAYS.between(LocalDate.now(), reserva.getData());
-            if (diasAteReserva < 1) {
-                throw new RuntimeException("O cancelamento só pode ser realizado com pelo menos 1 dia de antecedência da data agendada.");
+            Optional<UsuarioEntity> usuarioOP = usuarioRepository.findById(reservaDto.getUsuarioId());
+            if (usuarioOP.isEmpty()) {
+                throw new RuntimeException("Código de usuário não encontrado no sistema.");
             }
-            reserva.setCancelamento(LocalDate.now());
+            Optional<RecursoEntity> recursoOP = recursoRepository.findById(reservaDto.getRecursoId());
+            if (recursoOP.isEmpty()) {
+                throw new RuntimeException("Código de recurso não encontrado no sistema.");
+            }
+
+            UsuarioEntity usuario = usuarioOP.get();
+            RecursoEntity recurso = recursoOP.get();
+
+            ReservaEntity reserva = reservaOP.get();
+
+            reserva.setUsuario(usuario);
+            reserva.setRecurso(recurso);
+            reserva.setData(reservaDto.getData());
+            reserva.setHoraInicial(reservaDto.getHoraInicial());
+            reserva.setHoraFinal(reservaDto.getHoraFinal());
+            reserva.setCancelamento(reservaDto.getCancelamento());
             reserva.setObservacao(reservaDto.getObservacao());
+
             reservaRepository.save(reserva);
         }
     }
 
-    //Verificar se há conflito de agendamento para o mesmo recurso, data e horário ===
-    private boolean existeConflitoAgendamento(Long recursoId, LocalDate data, LocalTime horaInicial, LocalTime horaFinal, Long reservaIdExcluir) {
-        List<ReservaEntity> reservas = reservaRepository.findByRecursoId(recursoId);
-        for (ReservaEntity reserva : reservas) {
-            // Ignorar a própria reserva (para cancelamento sem conflito)
-            if (reserva.getId().equals(reservaIdExcluir)) {
-                continue;
-            }
-            // Ignorar reservas canceladas
-            if (reserva.getCancelamento() != null) {
-                continue;
-            }
-            // Mesma data e horário sobreposto
-            if (reserva.getData().equals(data)) {
-                boolean sobrepor = horaInicial.isBefore(reserva.getHoraFinal()) && horaFinal.isAfter(reserva.getHoraInicial());
-                if (sobrepor) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public void excluir(Long id) {reservaRepository.deleteById(id);
     }
 
-    //Verificar se recurso está ocupado agora
+    //=== INOVAÇÃO 1: Verificar se recurso está ocupado agora ===
     public boolean isRecursoOcupado(Long recursoId) {
         List<ReservaEntity> reservas = reservaRepository.findByRecursoId(recursoId);
         LocalDate hoje = LocalDate.now();
@@ -133,7 +119,7 @@ public class ReservaService {
         return false;
     }
 
-    //Obter horários disponíveis do recurso
+    //=== INOVAÇÃO 2: Obter horários disponíveis do recurso ===
     public RecursoDto obterHorariosRecurso(Long recursoId) {
         Optional<RecursoEntity> recursoOP = recursoRepository.findById(recursoId);
         if (recursoOP.isPresent()) {
@@ -147,6 +133,7 @@ public class ReservaService {
         return new RecursoDto();
     }
 
+    //=== INOVAÇÃO 3: Limite de reservas por usuário ===
     public int contarReservasAtivas(Long usuarioId) {
         List<ReservaEntity> reservas = reservaRepository.findByUsuarioId(usuarioId);
         long count = reservas.stream()
@@ -164,8 +151,8 @@ public class ReservaService {
     }
 
 
-    //Converter Entity para Dto - private só o service usa
-    private ReservaDto converterEntityParaDto(ReservaEntity reserva) {
+    //Converter Entity para Dto
+    private ReservaDto converterEntityParaDto(ReservaEntity reserva){
 
         ReservaDto reservaDto = new ReservaDto();
 
@@ -182,8 +169,8 @@ public class ReservaService {
     }
 
 
-    //Converter Dto para Entity - private só o service usa
-    private ReservaEntity converterDtoParaEntity(ReservaDto reservaDto) {
+    //Converter Dto para Entity
+    private ReservaEntity converterDtoParaEntity(ReservaDto reservaDto){
 
         Optional<UsuarioEntity> usuarioOP = usuarioRepository.findById(reservaDto.getUsuarioId());
         if (usuarioOP.isEmpty()) {

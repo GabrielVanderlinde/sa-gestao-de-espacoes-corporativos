@@ -8,7 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -21,11 +26,12 @@ public class ReservaController {
     }
 
 
-    //-- cadastrar nova reserva com validação de limite
-    @PostMapping("/reservainserir")
-    public String cadastrarReserva(@Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
-        if (bindingResult.hasErrors()) {
+    //-- cadastrar nova reserva
+    @PostMapping("/reservainserir")
+    public String cadastrarReserva(@Valid @ModelAttribute("reserva")ReservaDto reservaDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model){
+
+        if (bindingResult.hasErrors()){
             return "reservainserir";
         }
 
@@ -34,28 +40,23 @@ public class ReservaController {
             redirectAttributes.addFlashAttribute("mensagem", "Reserva cadastrada com sucesso.");
             return "redirect:/reservalista";
         } catch (RuntimeException e) {
-            String chave = e.getMessage().contains("Limite") ? "erroLimite" : "erro";
-            model.addAttribute(chave, e.getMessage());
+            model.addAttribute("erro", e.getMessage());
             return "reservainserir";
         }
     }
 
 
-    //-- cancelar reserva
-    @PostMapping("/reservacancelar")
-    public String cancelarReserva(@Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult,
-                                  RedirectAttributes redirectAttributes, Model model) {
+    @PostMapping("/reservaatualizar")
+    public String atualizarReserva(Model model, @Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult,
+                                   RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
             return "reservaatualizar";
         }
-        try {
-            service.cancelarReserva(reservaDto);
-            redirectAttributes.addFlashAttribute("mensagem", "Reserva cancelada com sucesso.");
-            return "redirect:/reservalista";
-        } catch (RuntimeException e) {
-            model.addAttribute("erro", e.getMessage());
-            return "reservaatualizar";
-        }
+        redirectAttributes.addFlashAttribute("mensagem", "Reserva atualizada com sucesso.");
+        service.reservaAtualizar(reservaDto);
+
+        return "redirect:/reservalista";
     }
 
 
@@ -65,14 +66,14 @@ public class ReservaController {
         return ResponseEntity.ok().body("Excluido");
     }
 
-    //Endpoint REST para horários do recurso (horário automático)
+    //=== INOVAÇÃO: Endpoint REST para horários do recurso (horário automático) ===
     @GetMapping("/api/recurso/{id}/horarios")
     @ResponseBody
     public RecursoDto obterHorariosRecurso(@PathVariable Long id) {
         return service.obterHorariosRecurso(id);
     }
 
-    //Endpoint REST para status do recurso (indicador visual)
+    //=== INOVAÇÃO: Endpoint REST para status do recurso (indicador visual) ===
     @GetMapping("/api/recurso/{id}/status")
     @ResponseBody
     public java.util.Map<String, Object> obterStatusRecurso(@PathVariable Long id) {
@@ -80,7 +81,7 @@ public class ReservaController {
         return java.util.Map.of("ocupado", ocupado, "status", ocupado ? "Ocupado" : "Livre");
     }
 
-    //Endpoint REST para contar reservas do usuário
+    //=== INOVAÇÃO: Endpoint REST para contar reservas do usuário ===
     @GetMapping("/api/usuario/{id}/reservas")
     @ResponseBody
     public java.util.Map<String, Object> contarReservasUsuario(@PathVariable Long id) {

@@ -1,5 +1,6 @@
 package com.senai.gestao_de_espacos_corporativos.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ public class ReservaDto {
 
     private LocalDate cancelamento;
 
+    @NotBlank(message = "Observação é obrigatória no cancelamento")
     private String observacao;
 
     public ReservaDto() {

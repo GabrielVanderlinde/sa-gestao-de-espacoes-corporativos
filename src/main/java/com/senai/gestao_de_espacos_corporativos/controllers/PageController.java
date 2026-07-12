@@ -44,12 +44,6 @@ public class PageController {
         return "home";
     }
 
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
-    }
-
     //----------------------------------------------------------------
     // Usuário
     @GetMapping("/usuarioinserir")
@@ -99,8 +93,9 @@ public class PageController {
     // Reserva
     @GetMapping("/reservainserir")
     public String getReservaInserir(Model model) {
-        ReservaDto reserva = new ReservaDto();
         model.addAttribute("reserva", new ReservaDto());
+        model.addAttribute("usuarios", usuarioService.obterListaUsuarios());
+        model.addAttribute("recursos", recursoService.obterListaRecursos());
         return "reservainserir";
     }
 
@@ -111,18 +106,11 @@ public class PageController {
         return "reservalista";
     }
 
-    @GetMapping("/reservacancelar/{id}")
-    public String getReservaCancelar(Model model, @PathVariable Long id) {
+    @GetMapping("/reservaatualizar/{id}")
+    public String getReservaAtualizar(Model model, @PathVariable Long id) {
         ReservaDto reserva = reservaService.obterReservaPorId(id);
         model.addAttribute("reserva", reserva);
         return "reservaatualizar";
-    }
-
-    @GetMapping("/reservavisualizar/{id}")
-    public String getReservaVisualizar(Model model, @PathVariable Long id) {
-        ReservaDto reserva = reservaService.obterReservaPorId(id);
-        model.addAttribute("reserva", reserva);
-        return "reservavisualizar";
     }
 
 
