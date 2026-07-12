@@ -113,5 +113,12 @@ public class PageController {
         return "reservaatualizar";
     }
 
+    @GetMapping("/reservacancelar/{id}")
+    public String getReservaCancelar(Model model, @PathVariable Long id) {
+        ReservaDto reserva = reservaService.obterReservaPorId(id);
+        model.addAttribute("reserva", reserva);
+        return "reservacancelar";
+    }
+
 
 }

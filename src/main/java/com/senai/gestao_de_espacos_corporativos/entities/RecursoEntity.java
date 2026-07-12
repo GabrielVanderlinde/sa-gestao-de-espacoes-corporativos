@@ -28,7 +28,7 @@ public class RecursoEntity {
     @FutureOrPresent(message = "Data inicial deve ser hoje ou futura")
     private java.time.LocalDate dataInicialAgendamento;
 
-    @Future(message = "Data final deve ser futura")
+    @FutureOrPresent(message = "Data final deve ser hoje ou futura")
     private java.time.LocalDate dataFinalAgendamento;
 
     private java.time.LocalTime horaInicialAgendamento;

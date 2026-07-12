@@ -21,7 +21,16 @@ public class RecursoService {
 
     //-- Inserir Recurso
     public void inserirRecurso(RecursoDto recursoDto) {
-
+        if (recursoDto.getDataInicialAgendamento() != null && recursoDto.getDataFinalAgendamento() != null) {
+            if (recursoDto.getDataInicialAgendamento().isAfter(recursoDto.getDataFinalAgendamento())) {
+                throw new RuntimeException("Data inicial não pode ser posterior à data final.");
+            }
+        }
+        if (recursoDto.getHoraInicialAgendamento() != null && recursoDto.getHoraFinalAgendamento() != null) {
+            if (!recursoDto.getHoraInicialAgendamento().isBefore(recursoDto.getHoraFinalAgendamento())) {
+                throw new RuntimeException("Hora inicial deve ser anterior à hora final.");
+            }
+        }
         repository.save(converterDtoParaEntity(recursoDto));
     }
 
@@ -58,24 +67,39 @@ public class RecursoService {
 
         Optional<RecursoEntity> recursoOP = repository.findById(recursoDto.getId());
 
-        if (recursoOP.isPresent()) {
-            // usuarioOP.get() --> usuario com os dados do banco de dados
-            // usuarioDto --> dados do usuário que vieram do formulário
-            RecursoEntity recurso = recursoOP.get();
-
-            recurso.setDescricao(recursoDto.getDescricao());
-            recurso.setTipo(recursoDto.getTipo());
-            recurso.setDiasSemanaDisponivel(recursoDto.getDiasSemanaDisponivel());
-            recurso.setDataInicialAgendamento(recursoDto.getDataInicialAgendamento());
-            recurso.setDataFinalAgendamento(recursoDto.getDataFinalAgendamento());
-            recurso.setHoraInicialAgendamento(recursoDto.getHoraInicialAgendamento());
-            recurso.setHoraFinalAgendamento(recursoDto.getHoraFinalAgendamento());
-
-            repository.save(recurso);
+        if (recursoOP.isEmpty()) {
+            throw new RuntimeException("Recurso não encontrado no sistema.");
         }
+
+        if (recursoDto.getDataInicialAgendamento() != null && recursoDto.getDataFinalAgendamento() != null) {
+            if (recursoDto.getDataInicialAgendamento().isAfter(recursoDto.getDataFinalAgendamento())) {
+                throw new RuntimeException("Data inicial não pode ser posterior à data final.");
+            }
+        }
+        if (recursoDto.getHoraInicialAgendamento() != null && recursoDto.getHoraFinalAgendamento() != null) {
+            if (!recursoDto.getHoraInicialAgendamento().isBefore(recursoDto.getHoraFinalAgendamento())) {
+                throw new RuntimeException("Hora inicial deve ser anterior à hora final.");
+            }
+        }
+
+        RecursoEntity recurso = recursoOP.get();
+
+        recurso.setDescricao(recursoDto.getDescricao());
+        recurso.setTipo(recursoDto.getTipo());
+        recurso.setDiasSemanaDisponivel(recursoDto.getDiasSemanaDisponivel());
+        recurso.setDataInicialAgendamento(recursoDto.getDataInicialAgendamento());
+        recurso.setDataFinalAgendamento(recursoDto.getDataFinalAgendamento());
+        recurso.setHoraInicialAgendamento(recursoDto.getHoraInicialAgendamento());
+        recurso.setHoraFinalAgendamento(recursoDto.getHoraFinalAgendamento());
+
+        repository.save(recurso);
     }
 
     public void excluir(Long id) {
+        Optional<RecursoEntity> recursoOP = repository.findById(id);
+        if (recursoOP.isEmpty()) {
+            throw new RuntimeException("Recurso não encontrado no sistema.");
+        }
         repository.deleteById(id);
     }
 

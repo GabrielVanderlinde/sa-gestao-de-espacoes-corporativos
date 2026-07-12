@@ -1,9 +1,9 @@
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
 
--- Criar banco de dados
-CREATE DATABASE IF NOT EXISTS espacos_corporativos;
+CREATE DATABASE IF NOT EXISTS espacos_corporativos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE espacos_corporativos;
 
--- Tabela de Usuários
 CREATE TABLE IF NOT EXISTS usuarios (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
@@ -11,27 +11,19 @@ CREATE TABLE IF NOT EXISTS usuarios (
     senha VARCHAR(255) NOT NULL,
     matricula VARCHAR(255) NOT NULL,
     data_nascimento DATE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabela de Recursos (Espaços/Equipamentos)
 CREATE TABLE IF NOT EXISTS recursos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
     tipo VARCHAR(255) NOT NULL,
+    dias_semana_disponivel VARCHAR(500),
     data_inicial_agendamento DATE,
     data_final_agendamento DATE,
     hora_inicial_agendamento TIME,
     hora_final_agendamento TIME
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabela de Dias da Semana Disponíveis (para cada recurso)
-CREATE TABLE IF NOT EXISTS recurso_dias_semana_disponivel (
-    recurso_id BIGINT NOT NULL,
-    dias_semana_disponivel VARCHAR(255),
-    FOREIGN KEY (recurso_id) REFERENCES recursos(id)
-);
-
--- Tabela de Reservas
 CREATE TABLE IF NOT EXISTS reservas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     usuario_id BIGINT NOT NULL,
@@ -43,10 +35,16 @@ CREATE TABLE IF NOT EXISTS reservas (
     observacao VARCHAR(255),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
     FOREIGN KEY (recurso_id) REFERENCES recursos(id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Usuário admin para teste (senha: admin123)
-INSERT INTO usuarios (nome, email, senha, matricula, data_nascimento)
-VALUES ('Administrador', 'admin@email.com', 'admin123', 'ADM001', '1990-01-15')
+INSERT INTO usuarios (nome, email, senha, matricula, data_nascimento) VALUES
+('Jonathan', 'jonathan@email.com', 'teste123', 'MAT001', '2000-05-10'),
+('Maria Silva', 'maria@email.com', 'teste123', 'MAT002', '1995-08-22'),
+('Gabriel Vanderlinde', 'gabriel@email.com', 'teste123', 'MAT003', '1988-12-01')
 ON DUPLICATE KEY UPDATE nome = nome;
 
+INSERT INTO recursos (descricao, tipo, dias_semana_disponivel, data_inicial_agendamento, data_final_agendamento, hora_inicial_agendamento, hora_final_agendamento) VALUES
+('Sala de Reunião Alpha', 'sala', 'Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira', '2026-01-01', '2026-12-31', '08:00', '18:00'),
+('Sala de Reunião Beta', 'sala', 'Segunda-feira, Quarta-feira, Sexta-feira', '2026-01-01', '2026-12-31', '09:00', '17:00'),
+('Projetor Portátil', 'equipamento', 'Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira, Sábado', '2026-01-01', '2026-12-31', '08:00', '20:00')
+ON DUPLICATE KEY UPDATE descricao = descricao;

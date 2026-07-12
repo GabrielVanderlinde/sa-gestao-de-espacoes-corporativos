@@ -69,23 +69,41 @@ public class UsuarioService {
 
         Optional<UsuarioEntity> usuarioOP = repository.findById(usuarioDto.getId());
 
-        if (usuarioOP.isPresent()) {
-            UsuarioEntity usuario = usuarioOP.get();
-
-            usuario.setNome(usuarioDto.getNome());
-            usuario.setEmail(usuarioDto.getEmail());
-            usuario.setMatricula(usuarioDto.getMatricula());
-            usuario.setDataNascimento(usuarioDto.getDataNascimento());
-            // Senha só atualiza se informada
-            if (usuarioDto.getSenha() != null && !usuarioDto.getSenha().isEmpty()) {
-                usuario.setSenha(usuarioDto.getSenha());
-            }
-            repository.save(usuario);
+        if (usuarioOP.isEmpty()) {
+            throw new RuntimeException("Usuário não encontrado no sistema.");
         }
+
+        Optional<UsuarioEntity> emailExistente = repository.findByEmail(usuarioDto.getEmail());
+        if (emailExistente.isPresent() && !emailExistente.get().getId().equals(usuarioDto.getId())) {
+            throw new RuntimeException("E-mail já cadastrado para outro usuário.");
+        }
+
+        if (usuarioDto.getSenha() != null && !usuarioDto.getSenha().isEmpty()) {
+            if (usuarioDto.getSenha().length() < 5) {
+                throw new RuntimeException("Senha deve ter no mínimo 5 caracteres.");
+            }
+            if (!usuarioDto.getSenha().matches("^(?=.*[0-9])(?=.*[a-zA-Z]).*$")) {
+                throw new RuntimeException("Senha deve conter letras e números.");
+            }
+        }
+
+        UsuarioEntity usuario = usuarioOP.get();
+        usuario.setNome(usuarioDto.getNome());
+        usuario.setEmail(usuarioDto.getEmail());
+        usuario.setMatricula(usuarioDto.getMatricula());
+        usuario.setDataNascimento(usuarioDto.getDataNascimento());
+        if (usuarioDto.getSenha() != null && !usuarioDto.getSenha().isEmpty()) {
+            usuario.setSenha(usuarioDto.getSenha());
+        }
+        repository.save(usuario);
     }
 
 
     public void excluir(Long id) {
+        Optional<UsuarioEntity> usuarioOP = repository.findById(id);
+        if (usuarioOP.isEmpty()) {
+            throw new RuntimeException("Usuário não encontrado no sistema.");
+        }
         repository.deleteById(id);
     }
 

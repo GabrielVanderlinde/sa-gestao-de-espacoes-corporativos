@@ -27,7 +27,6 @@ public class ReservaDto {
 
     private LocalDate cancelamento;
 
-    @NotBlank(message = "Observação é obrigatória no cancelamento")
     private String observacao;
 
     public ReservaDto() {

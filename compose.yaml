@@ -28,6 +28,7 @@ services:
       - MYSQL_DATABASE=espacos_corporativos
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./data/criar_banco.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s

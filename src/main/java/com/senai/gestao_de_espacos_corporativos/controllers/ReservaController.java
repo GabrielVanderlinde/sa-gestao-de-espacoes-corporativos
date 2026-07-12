@@ -60,6 +60,23 @@ public class ReservaController {
     }
 
 
+    @PostMapping("/reservacancelar")
+    public String cancelarReserva(@Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult,
+                                   RedirectAttributes redirectAttributes, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "reservacancelar";
+        }
+        try {
+            service.cancelarReserva(reservaDto);
+            redirectAttributes.addFlashAttribute("mensagem", "Reserva cancelada com sucesso.");
+            return "redirect:/reservalista";
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "reservacancelar";
+        }
+    }
+
+
     @DeleteMapping("/reservaexcluir/{id}")
     public ResponseEntity<String> excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         service.excluir(id);

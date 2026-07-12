@@ -1,0 +1,502 @@
+{
+  "info": {
+    "name": "Gestão de Espaços Corporativos",
+    "description": "Todas as requisições da API do sistema de gestão de espaços corporativos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Login - Página",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/login"
+          }
+        },
+        {
+          "name": "Login - Realizar",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "jonathan@email.com"
+                },
+                {
+                  "key": "senha",
+                  "value": "teste123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuários",
+      "item": [
+        {
+          "name": "Listar Usuários",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/usuariolista"
+          }
+        },
+        {
+          "name": "Formulário Inserir Usuário",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/usuarioinserir"
+          }
+        },
+        {
+          "name": "Inserir Usuário",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/usuarioinserir",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "nome",
+                  "value": "Novo Usuário"
+                },
+                {
+                  "key": "email",
+                  "value": "novo@email.com"
+                },
+                {
+                  "key": "senha",
+                  "value": "teste123"
+                },
+                {
+                  "key": "matricula",
+                  "value": "MAT004"
+                },
+                {
+                  "key": "dataNascimento",
+                  "value": "1995-03-15"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Formulário Atualizar Usuário",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/usuarioatualizar/1"
+          }
+        },
+        {
+          "name": "Atualizar Usuário",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/usuarioatualizar",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "id",
+                  "value": "1"
+                },
+                {
+                  "key": "nome",
+                  "value": "Jonathan Atualizado"
+                },
+                {
+                  "key": "email",
+                  "value": "jonathan@email.com"
+                },
+                {
+                  "key": "senha",
+                  "value": ""
+                },
+                {
+                  "key": "matricula",
+                  "value": "MAT001"
+                },
+                {
+                  "key": "dataNascimento",
+                  "value": "2000-05-10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir Usuário",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/usuarioexcluir/4"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Espaços/Recursos",
+      "item": [
+        {
+          "name": "Listar Recursos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recursolista"
+          }
+        },
+        {
+          "name": "Formulário Inserir Recurso",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recursoinserir"
+          }
+        },
+        {
+          "name": "Inserir Recurso",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/recursoinserir",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "descricao",
+                  "value": "Sala de Reunião Gamma"
+                },
+                {
+                  "key": "tipo",
+                  "value": "sala"
+                },
+                {
+                  "key": "diasSemanaDisponivel",
+                  "value": "Segunda-feira, Terça-feira, Quarta-feira"
+                },
+                {
+                  "key": "dataInicialAgendamento",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "dataFinalAgendamento",
+                  "value": "2026-12-31"
+                },
+                {
+                  "key": "horaInicialAgendamento",
+                  "value": "08:00"
+                },
+                {
+                  "key": "horaFinalAgendamento",
+                  "value": "18:00"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Formulário Atualizar Recurso",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recursoatualizar/1"
+          }
+        },
+        {
+          "name": "Atualizar Recurso",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/recursoatualizar",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "id",
+                  "value": "1"
+                },
+                {
+                  "key": "descricao",
+                  "value": "Sala de Reunião Alpha Atualizada"
+                },
+                {
+                  "key": "tipo",
+                  "value": "sala"
+                },
+                {
+                  "key": "diasSemanaDisponivel",
+                  "value": "Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira"
+                },
+                {
+                  "key": "dataInicialAgendamento",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "dataFinalAgendamento",
+                  "value": "2026-12-31"
+                },
+                {
+                  "key": "horaInicialAgendamento",
+                  "value": "08:00"
+                },
+                {
+                  "key": "horaFinalAgendamento",
+                  "value": "18:00"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir Recurso",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/recursoexcluir/4"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reservas",
+      "item": [
+        {
+          "name": "Listar Reservas",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reservalista"
+          }
+        },
+        {
+          "name": "Formulário Inserir Reserva",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reservainserir"
+          }
+        },
+        {
+          "name": "Inserir Reserva",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservainserir",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "usuarioId",
+                  "value": "1"
+                },
+                {
+                  "key": "recursoId",
+                  "value": "1"
+                },
+                {
+                  "key": "data",
+                  "value": "2026-07-20"
+                },
+                {
+                  "key": "horaInicial",
+                  "value": "09:00"
+                },
+                {
+                  "key": "horaFinal",
+                  "value": "11:00"
+                },
+                {
+                  "key": "observacao",
+                  "value": "Reunião de projeto"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Formulário Atualizar Reserva",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reservaatualizar/1"
+          }
+        },
+        {
+          "name": "Atualizar Reserva",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservaatualizar",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "id",
+                  "value": "1"
+                },
+                {
+                  "key": "usuarioId",
+                  "value": "1"
+                },
+                {
+                  "key": "recursoId",
+                  "value": "1"
+                },
+                {
+                  "key": "data",
+                  "value": "2026-07-25"
+                },
+                {
+                  "key": "horaInicial",
+                  "value": "10:00"
+                },
+                {
+                  "key": "horaFinal",
+                  "value": "12:00"
+                },
+                {
+                  "key": "observacao",
+                  "value": "Reunião atualizada"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Formulário Cancelar Reserva",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reservacancelar/1"
+          }
+        },
+        {
+          "name": "Cancelar Reserva",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservacancelar",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "id",
+                  "value": "1"
+                },
+                {
+                  "key": "usuarioId",
+                  "value": "1"
+                },
+                {
+                  "key": "recursoId",
+                  "value": "1"
+                },
+                {
+                  "key": "data",
+                  "value": "2026-07-20"
+                },
+                {
+                  "key": "horaInicial",
+                  "value": "09:00"
+                },
+                {
+                  "key": "horaFinal",
+                  "value": "11:00"
+                },
+                {
+                  "key": "observacao",
+                  "value": "Motivo: conflito de agenda"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Excluir Reserva",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/reservaexcluir/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "APIs REST (Inovações)",
+      "item": [
+        {
+          "name": "Status do Recurso (Livre/Ocupado)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/recurso/1/status"
+          }
+        },
+        {
+          "name": "Horários do Recurso",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/recurso/1/horarios"
+          }
+        },
+        {
+          "name": "Contagem de Reservas do Usuário",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/usuario/1/reservas"
+          }
+        }
+      ]
+    }
+  ]
+}

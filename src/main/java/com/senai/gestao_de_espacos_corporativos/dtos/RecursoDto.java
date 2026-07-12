@@ -22,7 +22,7 @@ public class RecursoDto {
     @FutureOrPresent(message = "Data inicial deve ser hoje ou futura")
     private LocalDate dataInicialAgendamento;
 
-    @Future(message = "Data final deve ser futura")
+    @FutureOrPresent(message = "Data final deve ser hoje ou futura")
     private LocalDate dataFinalAgendamento;
 
     private LocalTime horaInicialAgendamento;
