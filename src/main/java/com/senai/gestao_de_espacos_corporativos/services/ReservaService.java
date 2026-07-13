@@ -121,88 +121,32 @@ public class ReservaService {
         return reservaDto;
     }
 
-    public void reservaAtualizar(ReservaDto reservaDto) {
-
-        Optional<ReservaEntity> reservaOP = reservaRepository.findById(reservaDto.getId());
-
-        if (reservaOP.isPresent()) {
-            Optional<UsuarioEntity> usuarioOP = usuarioRepository.findById(reservaDto.getUsuarioId());
-            if (usuarioOP.isEmpty()) {
-                throw new RuntimeException("Código de usuário não encontrado no sistema.");
-            }
-            Optional<RecursoEntity> recursoOP = recursoRepository.findById(reservaDto.getRecursoId());
-            if (recursoOP.isEmpty()) {
-                throw new RuntimeException("Código de recurso não encontrado no sistema.");
-            }
-
-            UsuarioEntity usuario = usuarioOP.get();
-            RecursoEntity recurso = recursoOP.get();
-
-            ReservaEntity reserva = reservaOP.get();
-
-            if (reserva.getCancelamento() != null) {
-                throw new RuntimeException("Não é possível atualizar uma reserva cancelada.");
-            }
-
-            if (reservaDto.getData().isBefore(LocalDate.now())) {
-                throw new RuntimeException("Não é possível atualizar reserva para data passada.");
-            }
-
-            if (reservaDto.getHoraInicial().isAfter(reservaDto.getHoraFinal()) || reservaDto.getHoraInicial().equals(reservaDto.getHoraFinal())) {
-                throw new RuntimeException("Hora inicial deve ser anterior à hora final.");
-            }
-
-            if (recurso.getDataInicialAgendamento() != null && recurso.getDataFinalAgendamento() != null) {
-                if (reservaDto.getData().isBefore(recurso.getDataInicialAgendamento()) ||
-                    reservaDto.getData().isAfter(recurso.getDataFinalAgendamento())) {
-                    throw new RuntimeException("Data da reserva fora do período disponível do recurso.");
-                }
-            }
-
-            if (recurso.getHoraInicialAgendamento() != null && recurso.getHoraFinalAgendamento() != null) {
-                if (reservaDto.getHoraInicial().isBefore(recurso.getHoraInicialAgendamento()) ||
-                    reservaDto.getHoraFinal().isAfter(recurso.getHoraFinalAgendamento())) {
-                    throw new RuntimeException("Horário fora do permitido pelo recurso.");
-                }
-            }
-
-            if (existeConflitoAgendamento(reservaDto.getRecursoId(), reservaDto.getData(),
-                    reservaDto.getHoraInicial(), reservaDto.getHoraFinal(), reservaDto.getId())) {
-                throw new RuntimeException("Conflito de agendamento: este recurso já está reservado para esta data e horário.");
-            }
-
-            reserva.setUsuario(usuario);
-            reserva.setRecurso(recurso);
-            reserva.setData(reservaDto.getData());
-            reserva.setHoraInicial(reservaDto.getHoraInicial());
-            reserva.setHoraFinal(reservaDto.getHoraFinal());
-            reserva.setCancelamento(reservaDto.getCancelamento());
-            reserva.setObservacao(reservaDto.getObservacao());
-
-            reservaRepository.save(reserva);
-        }
-    }
-
     public void excluir(Long id) {reservaRepository.deleteById(id);
     }
 
     public void cancelarReserva(ReservaDto reservaDto) {
-        Optional<ReservaEntity> reservaOP = reservaRepository.findById(reservaDto.getId());
-        if (reservaOP.isPresent()) {
-            ReservaEntity reserva = reservaOP.get();
-
-            if (reserva.getCancelamento() != null) {
-                throw new RuntimeException("Esta reserva já foi cancelada.");
-            }
-
-            long diasAteReserva = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), reserva.getData());
-            if (diasAteReserva < 1) {
-                throw new RuntimeException("O cancelamento só pode ser realizado com pelo menos 1 dia de antecedência.");
-            }
-            reserva.setCancelamento(LocalDate.now());
-            reserva.setObservacao(reservaDto.getObservacao());
-            reservaRepository.save(reserva);
+        if (reservaDto.getObservacao() == null || reservaDto.getObservacao().trim().isEmpty()) {
+            throw new RuntimeException("Observação é obrigatória para cancelar a reserva.");
         }
+
+        Optional<ReservaEntity> reservaOP = reservaRepository.findById(reservaDto.getId());
+        if (reservaOP.isEmpty()) {
+            throw new RuntimeException("Reserva não encontrada no sistema.");
+        }
+
+        ReservaEntity reserva = reservaOP.get();
+
+        if (reserva.getCancelamento() != null) {
+            throw new RuntimeException("Esta reserva já foi cancelada.");
+        }
+
+        long diasAteReserva = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), reserva.getData());
+        if (diasAteReserva < 1) {
+            throw new RuntimeException("O cancelamento só pode ser realizado com pelo menos 1 dia de antecedência.");
+        }
+        reserva.setCancelamento(LocalDate.now());
+        reserva.setObservacao(reservaDto.getObservacao().trim());
+        reservaRepository.save(reserva);
     }
 
     //=== INOVAÇÃO 1: Verificar se recurso está ocupado agora ===

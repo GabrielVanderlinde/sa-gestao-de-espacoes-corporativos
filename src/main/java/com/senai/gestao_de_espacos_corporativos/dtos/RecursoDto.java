@@ -1,7 +1,5 @@
 package com.senai.gestao_de_espacos_corporativos.dtos;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
@@ -19,10 +17,8 @@ public class RecursoDto {
 
     private String diasSemanaDisponivel;
 
-    @FutureOrPresent(message = "Data inicial deve ser hoje ou futura")
     private LocalDate dataInicialAgendamento;
 
-    @FutureOrPresent(message = "Data final deve ser hoje ou futura")
     private LocalDate dataFinalAgendamento;
 
     private LocalTime horaInicialAgendamento;

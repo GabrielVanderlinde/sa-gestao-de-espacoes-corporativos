@@ -25,16 +25,11 @@ public class ReservaController {
         this.service = service;
     }
 
-
-
-    //-- cadastrar nova reserva
     @PostMapping("/reservainserir")
     public String cadastrarReserva(@Valid @ModelAttribute("reserva")ReservaDto reservaDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model){
-
         if (bindingResult.hasErrors()){
             return "reservainserir";
         }
-
         try {
             service.inserirReserva(reservaDto);
             redirectAttributes.addFlashAttribute("mensagem", "Reserva cadastrada com sucesso.");
@@ -44,21 +39,6 @@ public class ReservaController {
             return "reservainserir";
         }
     }
-
-
-    @PostMapping("/reservaatualizar")
-    public String atualizarReserva(Model model, @Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult,
-                                   RedirectAttributes redirectAttributes) {
-
-        if (bindingResult.hasErrors()) {
-            return "reservaatualizar";
-        }
-        redirectAttributes.addFlashAttribute("mensagem", "Reserva atualizada com sucesso.");
-        service.reservaAtualizar(reservaDto);
-
-        return "redirect:/reservalista";
-    }
-
 
     @PostMapping("/reservacancelar")
     public String cancelarReserva(@Valid @ModelAttribute("reserva") ReservaDto reservaDto, BindingResult bindingResult,
@@ -76,21 +56,18 @@ public class ReservaController {
         }
     }
 
-
     @DeleteMapping("/reservaexcluir/{id}")
     public ResponseEntity<String> excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         service.excluir(id);
         return ResponseEntity.ok().body("Excluido");
     }
 
-    //=== INOVAÇÃO: Endpoint REST para horários do recurso (horário automático) ===
     @GetMapping("/api/recurso/{id}/horarios")
     @ResponseBody
     public RecursoDto obterHorariosRecurso(@PathVariable Long id) {
         return service.obterHorariosRecurso(id);
     }
 
-    //=== INOVAÇÃO: Endpoint REST para status do recurso (indicador visual) ===
     @GetMapping("/api/recurso/{id}/status")
     @ResponseBody
     public java.util.Map<String, Object> obterStatusRecurso(@PathVariable Long id) {
@@ -98,7 +75,6 @@ public class ReservaController {
         return java.util.Map.of("ocupado", ocupado, "status", ocupado ? "Ocupado" : "Livre");
     }
 
-    //=== INOVAÇÃO: Endpoint REST para contar reservas do usuário ===
     @GetMapping("/api/usuario/{id}/reservas")
     @ResponseBody
     public java.util.Map<String, Object> contarReservasUsuario(@PathVariable Long id) {

@@ -33,15 +33,18 @@ public class UsuarioService {
     }
 
     public void usuarioInserir(UsuarioDto usuarioDto) {
-        // Senha obrigatória na criação
         if (usuarioDto.getSenha() == null || usuarioDto.getSenha().isEmpty()) {
             throw new RuntimeException("Senha é obrigatória no cadastro.");
         }
-        // Unicidade via e-mail
+        if (usuarioDto.getSenha().length() < 5) {
+            throw new RuntimeException("Senha deve ter no mínimo 5 caracteres.");
+        }
+        if (!usuarioDto.getSenha().matches("^(?=.*[0-9])(?=.*[a-zA-Z]).*$")) {
+            throw new RuntimeException("Senha deve conter letras e números.");
+        }
         if (repository.findByEmail(usuarioDto.getEmail()).isPresent()) {
             throw new RuntimeException("E-mail já cadastrado no sistema.");
         }
-        // Data de nascimento não pode ter mais de 500 anos
         if (usuarioDto.getDataNascimento() != null) {
             int idade = java.time.Period.between(usuarioDto.getDataNascimento(), java.time.LocalDate.now()).getYears();
             if (idade > 500) {
@@ -78,11 +81,14 @@ public class UsuarioService {
             throw new RuntimeException("E-mail já cadastrado para outro usuário.");
         }
 
-        if (usuarioDto.getSenha() != null && !usuarioDto.getSenha().isEmpty()) {
-            if (usuarioDto.getSenha().length() < 5) {
+        String senha = usuarioDto.getSenha();
+        boolean senhaPreenchida = senha != null && !senha.trim().isEmpty();
+
+        if (senhaPreenchida) {
+            if (senha.trim().length() < 5) {
                 throw new RuntimeException("Senha deve ter no mínimo 5 caracteres.");
             }
-            if (!usuarioDto.getSenha().matches("^(?=.*[0-9])(?=.*[a-zA-Z]).*$")) {
+            if (!senha.trim().matches("^(?=.*[0-9])(?=.*[a-zA-Z]).*$")) {
                 throw new RuntimeException("Senha deve conter letras e números.");
             }
         }
@@ -92,8 +98,8 @@ public class UsuarioService {
         usuario.setEmail(usuarioDto.getEmail());
         usuario.setMatricula(usuarioDto.getMatricula());
         usuario.setDataNascimento(usuarioDto.getDataNascimento());
-        if (usuarioDto.getSenha() != null && !usuarioDto.getSenha().isEmpty()) {
-            usuario.setSenha(usuarioDto.getSenha());
+        if (senhaPreenchida) {
+            usuario.setSenha(senha.trim());
         }
         repository.save(usuario);
     }

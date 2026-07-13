@@ -1,8 +1,6 @@
 package com.senai.gestao_de_espacos_corporativos.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
@@ -25,10 +23,8 @@ public class RecursoEntity {
     @Column(length = 500)
     private String diasSemanaDisponivel;
 
-    @FutureOrPresent(message = "Data inicial deve ser hoje ou futura")
     private java.time.LocalDate dataInicialAgendamento;
 
-    @FutureOrPresent(message = "Data final deve ser hoje ou futura")
     private java.time.LocalDate dataFinalAgendamento;
 
     private java.time.LocalTime horaInicialAgendamento;

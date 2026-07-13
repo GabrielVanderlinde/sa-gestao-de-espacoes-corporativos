@@ -40,15 +40,19 @@ public class PageController {
     }
 
     @GetMapping("/home")
-    public String getHome() {
+    public String getHome(Model model, HttpSession session) {
+        model.addAttribute("usuarioLogado", session.getAttribute("usuarioLogado"));
         return "home";
     }
 
-    //----------------------------------------------------------------
-    // Usuário
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+
     @GetMapping("/usuarioinserir")
     public String getUsuarioInserir(Model model) {
-        UsuarioDto usuarioDto = new UsuarioDto();
         model.addAttribute("usuario", new UsuarioDto());
         return "usuarioinserir";
     }
@@ -67,11 +71,8 @@ public class PageController {
         return "usuarioatualizar";
     }
 
-    //-------------------------------------------------------------------------
-    // Recurso
     @GetMapping("/recursoinserir")
     public String getRecursoInserir(Model model) {
-        RecursoDto recursoDto = new RecursoDto();
         model.addAttribute("recurso", new RecursoDto());
         return "recursoinserir";
     }
@@ -90,7 +91,6 @@ public class PageController {
         return "recursoatualizar";
     }
 
-    // Reserva
     @GetMapping("/reservainserir")
     public String getReservaInserir(Model model) {
         model.addAttribute("reserva", new ReservaDto());
@@ -106,11 +106,11 @@ public class PageController {
         return "reservalista";
     }
 
-    @GetMapping("/reservaatualizar/{id}")
-    public String getReservaAtualizar(Model model, @PathVariable Long id) {
+    @GetMapping("/reservavisualizar/{id}")
+    public String getReservaVisualizar(Model model, @PathVariable Long id) {
         ReservaDto reserva = reservaService.obterReservaPorId(id);
         model.addAttribute("reserva", reserva);
-        return "reservaatualizar";
+        return "reservavisualizar";
     }
 
     @GetMapping("/reservacancelar/{id}")
@@ -119,6 +119,5 @@ public class PageController {
         model.addAttribute("reserva", reserva);
         return "reservacancelar";
     }
-
 
 }

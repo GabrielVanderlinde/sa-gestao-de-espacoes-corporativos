@@ -21,6 +21,11 @@ public class RecursoService {
 
     //-- Inserir Recurso
     public void inserirRecurso(RecursoDto recursoDto) {
+        if (recursoDto.getDataInicialAgendamento() != null) {
+            if (recursoDto.getDataInicialAgendamento().isBefore(java.time.LocalDate.now())) {
+                throw new RuntimeException("Data inicial não pode ser no passado.");
+            }
+        }
         if (recursoDto.getDataInicialAgendamento() != null && recursoDto.getDataFinalAgendamento() != null) {
             if (recursoDto.getDataInicialAgendamento().isAfter(recursoDto.getDataFinalAgendamento())) {
                 throw new RuntimeException("Data inicial não pode ser posterior à data final.");

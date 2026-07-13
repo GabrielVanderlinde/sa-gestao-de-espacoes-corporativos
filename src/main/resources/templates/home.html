@@ -20,6 +20,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="menuPrincipal">
+            <span class="navbar-text text-white me-3" th:if="${usuarioLogado}"
+                  th:text="'Usuário: ' + ${usuarioLogado.nome}"></span>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a aria-current="page" class="nav-link active" th:href="@{/home}">Home</a>
@@ -36,7 +38,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/login}">Sair</a>
+                    <a class="nav-link" th:href="@{/logout}">Sair</a>
                 </li>
             </ul>
         </div>

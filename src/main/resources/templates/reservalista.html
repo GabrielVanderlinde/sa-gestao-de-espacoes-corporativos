@@ -22,7 +22,7 @@
                 <li class="nav-item"><a class="nav-link" th:href="@{/usuariolista}">Usuários</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/recursolista}">Espaços</a></li>
                 <li class="nav-item"><a class="nav-link active" th:href="@{/reservalista}">Reservas</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/login}">Sair</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Sair</a></li>
             </ul>
         </div>
     </div>
@@ -74,7 +74,7 @@
                             <td class="text-end">
                                 <div class="d-flex gap-1 justify-content-end">
                                     <a class="btn btn-sm btn-outline-info"
-                                       th:href="@{/reservaatualizar/{id}(id=${reserva.id})}">Editar</a>
+                                       th:href="@{/reservavisualizar/{id}(id=${reserva.id})}">Visualizar</a>
                                     <a class="btn btn-sm btn-outline-warning"
                                        th:href="@{/reservacancelar/{id}(id=${reserva.id})}"
                                        th:unless="${reserva.cancelamento != null}">Cancelar</a>

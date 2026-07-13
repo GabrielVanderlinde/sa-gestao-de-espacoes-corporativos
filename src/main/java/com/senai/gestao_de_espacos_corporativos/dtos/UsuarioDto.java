@@ -15,9 +15,6 @@ public class UsuarioDto {
     @NotBlank(message = "E-mail é obrigatório")
     private String email;
 
-    @Size(min = 5, message = "Senha deve ter no mínimo 5 caracteres")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).*$",
-            message = "Senha deve conter letras e números")
     private String senha;
 
     @NotBlank(message = "Matrícula é obrigatória")

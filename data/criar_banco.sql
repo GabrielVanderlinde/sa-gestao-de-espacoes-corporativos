@@ -47,8 +47,8 @@ INSERT INTO usuarios (nome, email, senha, matricula, data_nascimento) VALUES
 ('Carlos Souza', 'carlos@email.com', 'teste123', 'MAT003', '1988-12-01');
 
 INSERT INTO recursos (descricao, tipo, dias_semana_disponivel, data_inicial_agendamento, data_final_agendamento, hora_inicial_agendamento, hora_final_agendamento) VALUES
-('Sala de Reunião Alpha', 'sala', 'Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira', '2026-01-01', '2026-12-31', '08:00', '18:00'),
-('Sala de Reunião Beta', 'sala', 'Segunda-feira, Quarta-feira, Sexta-feira', '2026-01-01', '2026-12-31', '09:00', '17:00'),
+('Sala de Reunião Alpha', 'espaço', 'Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira', '2026-01-01', '2026-12-31', '08:00', '18:00'),
+('Sala de Reunião Beta', 'espaço', 'Segunda-feira, Quarta-feira, Sexta-feira', '2026-01-01', '2026-12-31', '09:00', '17:00'),
 ('Projetor Portátil', 'equipamento', 'Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira, Sábado', '2026-01-01', '2026-12-31', '08:00', '20:00');
 
 INSERT INTO reservas (usuario_id, recurso_id, data, hora_inicial, hora_final, cancelamento, observacao) VALUES

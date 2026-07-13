@@ -20,7 +20,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" th:href="@{/home}">Home</a></li>
                 <li class="nav-item"><a class="nav-link active" th:href="@{/reservalista}">Reservas</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/login}">Sair</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Sair</a></li>
             </ul>
         </div>
     </div>
@@ -49,13 +49,13 @@
                         <input th:field="*{horaFinal}" type="hidden">
 
                         <div class="mb-3">
-                            <label class="form-label">Usuário ID</label>
-                            <input class="form-control" disabled th:value="*{usuarioId}" type="text">
+                            <label class="form-label">Usuário</label>
+                            <input class="form-control" disabled th:value="*{nomeUsuario}" type="text">
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Recurso ID</label>
-                            <input class="form-control" disabled th:value="*{recursoId}" type="text">
+                            <label class="form-label">Espaço/Recurso</label>
+                            <input class="form-control" disabled th:value="*{descricaoRecurso}" type="text">
                         </div>
 
                         <div class="mb-3">
