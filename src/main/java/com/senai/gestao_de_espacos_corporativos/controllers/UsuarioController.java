@@ -60,8 +60,12 @@ public class UsuarioController {
 
     @DeleteMapping("/usuarioexcluir/{id}")
     public ResponseEntity<String> excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        service.excluir(id);
-        return ResponseEntity.ok().body("Excluido");
+        try {
+            service.excluir(id);
+            return ResponseEntity.ok().body("Excluido");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 

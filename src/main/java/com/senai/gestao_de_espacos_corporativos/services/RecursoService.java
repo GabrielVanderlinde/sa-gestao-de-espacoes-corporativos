@@ -2,7 +2,9 @@ package com.senai.gestao_de_espacos_corporativos.services;
 
 import com.senai.gestao_de_espacos_corporativos.dtos.RecursoDto;
 import com.senai.gestao_de_espacos_corporativos.entities.RecursoEntity;
+import com.senai.gestao_de_espacos_corporativos.entities.ReservaEntity;
 import com.senai.gestao_de_espacos_corporativos.repositories.RecursoRepository;
+import com.senai.gestao_de_espacos_corporativos.repositories.ReservaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,9 +15,11 @@ import java.util.Optional;
 public class RecursoService {
 
     private final RecursoRepository repository;
+    private final ReservaRepository reservaRepository;
 
-    public RecursoService(RecursoRepository repository) {
+    public RecursoService(RecursoRepository repository, ReservaRepository reservaRepository) {
         this.repository = repository;
+        this.reservaRepository = reservaRepository;
     }
 
 
@@ -104,6 +108,10 @@ public class RecursoService {
         Optional<RecursoEntity> recursoOP = repository.findById(id);
         if (recursoOP.isEmpty()) {
             throw new RuntimeException("Recurso não encontrado no sistema.");
+        }
+        List<ReservaEntity> reservas = reservaRepository.findByRecursoId(id);
+        if (!reservas.isEmpty()) {
+            throw new RuntimeException("Não é possível excluir o recurso pois existem reservas vinculadas. Cancele ou exclua as reservas primeiro.");
         }
         repository.deleteById(id);
     }

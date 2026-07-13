@@ -1,7 +1,9 @@
 package com.senai.gestao_de_espacos_corporativos.services;
 
 import com.senai.gestao_de_espacos_corporativos.dtos.UsuarioDto;
+import com.senai.gestao_de_espacos_corporativos.entities.ReservaEntity;
 import com.senai.gestao_de_espacos_corporativos.entities.UsuarioEntity;
+import com.senai.gestao_de_espacos_corporativos.repositories.ReservaRepository;
 import com.senai.gestao_de_espacos_corporativos.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,11 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository repository;
+    private final ReservaRepository reservaRepository;
 
-    public UsuarioService(UsuarioRepository repository) {
+    public UsuarioService(UsuarioRepository repository, ReservaRepository reservaRepository) {
         this.repository = repository;
+        this.reservaRepository = reservaRepository;
     }
 
 
@@ -109,6 +113,10 @@ public class UsuarioService {
         Optional<UsuarioEntity> usuarioOP = repository.findById(id);
         if (usuarioOP.isEmpty()) {
             throw new RuntimeException("Usuário não encontrado no sistema.");
+        }
+        List<ReservaEntity> reservas = reservaRepository.findByUsuarioId(id);
+        if (!reservas.isEmpty()) {
+            throw new RuntimeException("Não é possível excluir o usuário pois existem reservas vinculadas. Cancele ou exclua as reservas primeiro.");
         }
         repository.deleteById(id);
     }
