@@ -22,19 +22,23 @@ public class RecursoService {
         this.reservaRepository = reservaRepository;
     }
 
-
-    //-- Inserir Recurso
+    // CRIAR RECURSO
+    // Valida datas e horários antes de salvar.
+    // Na criação, data inicial não pode ser no passado.
     public void inserirRecurso(RecursoDto recursoDto) {
+        // data inicial não pode ser no passado (só na criação)
         if (recursoDto.getDataInicialAgendamento() != null) {
             if (recursoDto.getDataInicialAgendamento().isBefore(java.time.LocalDate.now())) {
                 throw new RuntimeException("Data inicial não pode ser no passado.");
             }
         }
+        // data inicial tem que ser antes da final
         if (recursoDto.getDataInicialAgendamento() != null && recursoDto.getDataFinalAgendamento() != null) {
             if (recursoDto.getDataInicialAgendamento().isAfter(recursoDto.getDataFinalAgendamento())) {
                 throw new RuntimeException("Data inicial não pode ser posterior à data final.");
             }
         }
+        // hora inicial tem que ser antes da final
         if (recursoDto.getHoraInicialAgendamento() != null && recursoDto.getHoraFinalAgendamento() != null) {
             if (!recursoDto.getHoraInicialAgendamento().isBefore(recursoDto.getHoraFinalAgendamento())) {
                 throw new RuntimeException("Hora inicial deve ser anterior à hora final.");
@@ -43,43 +47,42 @@ public class RecursoService {
         repository.save(converterDtoParaEntity(recursoDto));
     }
 
-
-    //-- Listar Recursos
+    // LISTAR RECURSOS
+    // Pega todos do banco e converte pra DTO.
     public List<RecursoDto> obterListaRecursos() {
-
         List<RecursoDto> listaDto = new ArrayList<>();
-
         List<RecursoEntity> listaRecurso = repository.findAll();
 
         for (RecursoEntity recursoEntity : listaRecurso) {
-
             listaDto.add(converterEntityParaDto(recursoEntity));
         }
         return listaDto;
     }
 
-    public RecursoDto obterRecursoPorId(Long id) {
 
+    // BUSCAR RECURSO POR ID
+    // Usado pra preencher o formulário de edição.
+    public RecursoDto obterRecursoPorId(Long id) {
         RecursoDto recursoDto = new RecursoDto();
-        //-- Vai na base de dados obter o usuario pelo ID
         Optional<RecursoEntity> recursoOP = repository.findById(id);
 
         if (recursoOP.isPresent()) {
-            //--Converte o entity para dto
             recursoDto = converterEntityParaDto(recursoOP.get());
         }
-        //--retorna o Dto para o controller
         return recursoDto;
     }
 
-    public void recursoAtualizar(RecursoDto recursoDto) {
 
+    // ATUALIZAR RECURSO
+    // Na atualização NÃO valida data no passado (recurso pode ter sido criado antes).
+    public void recursoAtualizar(RecursoDto recursoDto) {
         Optional<RecursoEntity> recursoOP = repository.findById(recursoDto.getId());
 
         if (recursoOP.isEmpty()) {
             throw new RuntimeException("Recurso não encontrado no sistema.");
         }
 
+        // só valida relação entre datas
         if (recursoDto.getDataInicialAgendamento() != null && recursoDto.getDataFinalAgendamento() != null) {
             if (recursoDto.getDataInicialAgendamento().isAfter(recursoDto.getDataFinalAgendamento())) {
                 throw new RuntimeException("Data inicial não pode ser posterior à data final.");
@@ -92,7 +95,6 @@ public class RecursoService {
         }
 
         RecursoEntity recurso = recursoOP.get();
-
         recurso.setDescricao(recursoDto.getDescricao());
         recurso.setTipo(recursoDto.getTipo());
         recurso.setDiasSemanaDisponivel(recursoDto.getDiasSemanaDisponivel());
@@ -104,11 +106,14 @@ public class RecursoService {
         repository.save(recurso);
     }
 
+    // EXCLUIR RECURSO
+    // Verifica se não tem reservas vinculadas antes de excluir.
     public void excluir(Long id) {
         Optional<RecursoEntity> recursoOP = repository.findById(id);
         if (recursoOP.isEmpty()) {
             throw new RuntimeException("Recurso não encontrado no sistema.");
         }
+        // não deixa excluir se tiver reserva pra esse recurso
         List<ReservaEntity> reservas = reservaRepository.findByRecursoId(id);
         if (!reservas.isEmpty()) {
             throw new RuntimeException("Não é possível excluir o recurso pois existem reservas vinculadas. Cancele ou exclua as reservas primeiro.");
@@ -117,11 +122,10 @@ public class RecursoService {
     }
 
 
-    //--  novo - converter Entity para Dto - private só o service usa
+    // CONVERSORES
+    // Entity = banco, DTO = controller/template.
     private RecursoDto converterEntityParaDto(RecursoEntity recurso) {
-
         RecursoDto recursoDto = new RecursoDto();
-
         recursoDto.setId(recurso.getId());
         recursoDto.setDescricao(recurso.getDescricao());
         recursoDto.setTipo(recurso.getTipo());
@@ -133,11 +137,8 @@ public class RecursoService {
         return recursoDto;
     }
 
-    //-- novo - converter Dto para Entity - private só o service usa
     private RecursoEntity converterDtoParaEntity(RecursoDto recursoDto) {
-
         RecursoEntity recursoEntity = new RecursoEntity();
-
         recursoEntity.setId(recursoDto.getId());
         recursoEntity.setDescricao(recursoDto.getDescricao());
         recursoEntity.setTipo(recursoDto.getTipo());
@@ -146,9 +147,7 @@ public class RecursoService {
         recursoEntity.setDataFinalAgendamento(recursoDto.getDataFinalAgendamento());
         recursoEntity.setHoraInicialAgendamento(recursoDto.getHoraInicialAgendamento());
         recursoEntity.setHoraFinalAgendamento(recursoDto.getHoraFinalAgendamento());
-
         return recursoEntity;
     }
-
 
 }

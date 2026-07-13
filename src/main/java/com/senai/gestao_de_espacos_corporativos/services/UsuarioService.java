@@ -22,33 +22,39 @@ public class UsuarioService {
         this.reservaRepository = reservaRepository;
     }
 
-
+    // LISTAR USUÁRIOS
+    // Pega todos do banco e converte pra DTO.
     public List<UsuarioDto> obterListaUsuarios() {
-
         List<UsuarioDto> listaDto = new ArrayList<>();
-
         List<UsuarioEntity> listaUsuario = repository.findAll();
 
         for (UsuarioEntity usuarioEntity : listaUsuario) {
-
             listaDto.add(converterEntityParaDto(usuarioEntity));
         }
         return listaDto;
     }
 
+
+    // CRIAR USUÁRIO
+    // Valida email único, senha com regras, e data de nascimento.
     public void usuarioInserir(UsuarioDto usuarioDto) {
+        // senha é obrigatória no cadastro
         if (usuarioDto.getSenha() == null || usuarioDto.getSenha().isEmpty()) {
             throw new RuntimeException("Senha é obrigatória no cadastro.");
         }
+        // senha precisa ter no mínimo 5 caracteres
         if (usuarioDto.getSenha().length() < 5) {
             throw new RuntimeException("Senha deve ter no mínimo 5 caracteres.");
         }
+        // senha precisa ter letra E número
         if (!usuarioDto.getSenha().matches("^(?=.*[0-9])(?=.*[a-zA-Z]).*$")) {
             throw new RuntimeException("Senha deve conter letras e números.");
         }
+        // email tem que ser único no sistema
         if (repository.findByEmail(usuarioDto.getEmail()).isPresent()) {
             throw new RuntimeException("E-mail já cadastrado no sistema.");
         }
+        // data de nascimento não pode ter mais de 500 anos
         if (usuarioDto.getDataNascimento() != null) {
             int idade = java.time.Period.between(usuarioDto.getDataNascimento(), java.time.LocalDate.now()).getYears();
             if (idade > 500) {
@@ -58,33 +64,34 @@ public class UsuarioService {
         repository.save(converterDtoParaEntity(usuarioDto));
     }
 
+    // BUSCAR USUÁRIO POR ID
+    // Usado pra preencher o formulário de edição.
     public UsuarioDto obterUsuarioPorId(Long id) {
-
         UsuarioDto usuarioDto = new UsuarioDto();
-        //-- Vai na base de dados obter o usuario pelo ID
         Optional<UsuarioEntity> usuarioOP = repository.findById(id);
 
         if (usuarioOP.isPresent()) {
-            //--Converte o entity para dto
             usuarioDto = converterEntityParaDto(usuarioOP.get());
         }
-        //--retorna o Dto para o controller
         return usuarioDto;
     }
 
+    // ATUALIZAR USUÁRIO
+    // Diferente de criar: senha é opcional (só valida se preencheu).
     public void usuarioAtualizar(UsuarioDto usuarioDto) {
-
         Optional<UsuarioEntity> usuarioOP = repository.findById(usuarioDto.getId());
 
         if (usuarioOP.isEmpty()) {
             throw new RuntimeException("Usuário não encontrado no sistema.");
         }
 
+        // email tem que ser único, mas ignora o próprio usuário
         Optional<UsuarioEntity> emailExistente = repository.findByEmail(usuarioDto.getEmail());
         if (emailExistente.isPresent() && !emailExistente.get().getId().equals(usuarioDto.getId())) {
             throw new RuntimeException("E-mail já cadastrado para outro usuário.");
         }
 
+        // só valida senha se o usuário preencheu o campo
         String senha = usuarioDto.getSenha();
         boolean senhaPreenchida = senha != null && !senha.trim().isEmpty();
 
@@ -102,18 +109,21 @@ public class UsuarioService {
         usuario.setEmail(usuarioDto.getEmail());
         usuario.setMatricula(usuarioDto.getMatricula());
         usuario.setDataNascimento(usuarioDto.getDataNascimento());
+        // só atualiza a senha se foi preenchida
         if (senhaPreenchida) {
             usuario.setSenha(senha.trim());
         }
         repository.save(usuario);
     }
 
-
+    // EXCLUIR USUÁRIO
+    // Verifica se não tem reservas vinculadas antes de excluir.
     public void excluir(Long id) {
         Optional<UsuarioEntity> usuarioOP = repository.findById(id);
         if (usuarioOP.isEmpty()) {
             throw new RuntimeException("Usuário não encontrado no sistema.");
         }
+        // não deixa excluir se tiver reserva pra esse usuário
         List<ReservaEntity> reservas = reservaRepository.findByUsuarioId(id);
         if (!reservas.isEmpty()) {
             throw new RuntimeException("Não é possível excluir o usuário pois existem reservas vinculadas. Cancele ou exclua as reservas primeiro.");
@@ -121,12 +131,10 @@ public class UsuarioService {
         repository.deleteById(id);
     }
 
-
-    //--  novo - converter Entity para Dto - private só o service usa
+    // CONVERSORES
+    // Entity = banco, DTO = controller/template.
     private UsuarioDto converterEntityParaDto(UsuarioEntity usuario) {
-
         UsuarioDto usuarioDto = new UsuarioDto();
-
         usuarioDto.setId(usuario.getId());
         usuarioDto.setNome(usuario.getNome());
         usuarioDto.setEmail(usuario.getEmail());
@@ -135,11 +143,8 @@ public class UsuarioService {
         return usuarioDto;
     }
 
-    //-- novo - converter Dto para Entity - private só o service usa
     private UsuarioEntity converterDtoParaEntity(UsuarioDto usuarioDto) {
-
         UsuarioEntity usuarioEntity = new UsuarioEntity();
-
         usuarioEntity.setId(usuarioDto.getId());
         usuarioEntity.setNome(usuarioDto.getNome());
         usuarioEntity.setEmail(usuarioDto.getEmail());
@@ -148,6 +153,5 @@ public class UsuarioService {
         usuarioEntity.setDataNascimento(usuarioDto.getDataNascimento());
         return usuarioEntity;
     }
-
 
 }

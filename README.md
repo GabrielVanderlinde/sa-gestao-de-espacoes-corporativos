@@ -93,8 +93,7 @@ mysql -u root -p espacos_corporativos < data/criar_banco.sql
 | GET | `/reservalista` | Listar reservas |
 | GET | `/reservainserir` | Formulário de cadastro |
 | POST | `/reservainserir` | Cadastrar reserva |
-| GET | `/reservaatualizar/{id}` | Formulário de edição |
-| POST | `/reservaatualizar` | Atualizar reserva |
+| GET | `/reservavisualizar/{id}` | Visualizar reserva (somente leitura) |
 | GET | `/reservacancelar/{id}` | Tela de cancelamento |
 | POST | `/reservacancelar` | Cancelar reserva |
 | DELETE | `/reservaexcluir/{id}` | Excluir reserva |
@@ -118,9 +117,9 @@ mysql -u root -p espacos_corporativos < data/criar_banco.sql
 
 ### Espaço/Recurso (RF02)
 - Descrição obrigatória
-- Tipo obrigatório
-- Data inicial: hoje ou futura
-- Data final: hoje ou futura e deve ser ≥ data inicial
+- Tipo obrigatório (espaço ou equipamento - select)
+- Data inicial: hoje ou futura (somente na criação)
+- Data final: deve ser ≥ data inicial
 - Hora inicial deve ser anterior à hora final
 - Dias da semana: seleção via checkboxes
 
@@ -132,11 +131,12 @@ mysql -u root -p espacos_corporativos < data/criar_banco.sql
 - Horário deve estar dentro do horário permitido do recurso
 - Máximo 5 reservas ativas por usuário
 - Conflito de agendamento: mesmo recurso, data e horário sobreposto
-- Cancelamento: mínimo 1 dia de antecedência
+- Cancelamento: mínimo 1 dia de antecedência, observação obrigatória
 - Tela de cancelamento: dados somente leitura, motivo obrigatório
+- **Não permite atualização de reserva** - apenas criar, visualizar, cancelar e excluir
 
 ### Autenticação (RF05)
-- Controle de acesso por sessão
+- Controle de acesso por sessão (LoginInterceptor)
 - Redirecionamento automático para login se não autenticado
 - Logout encerra a sessão
 
@@ -194,33 +194,18 @@ mer/
 └── MER.md             # Modelo de Entidade e Relacionamento detalhado
 ```
 
-## Postman
-
-A pasta `postman/` contém a coleção completa de requisições para testar a API:
-
-- **Autenticação**: Login, Logout
-- **Usuários**: CRUD completo
-- **Espaços/Recursos**: CRUD completo
-- **Reservas**: CRUD + Cancelamento
-- **APIs REST**: Status, Horários, Contagem
-
-Para importar:
-1. Abra o Postman
-2. Clique em **Import**
-3. Selecione o arquivo `Gestao-Espacos-Corporativos.postman_collection.json`
-
-## Funcionalidades
+## Resumo das Funcionalidades
 
 ### Requisitos Obrigatórios
 - **RF01**: Cadastro de usuários com validações completas
 - **RF02**: Cadastro de espaços/equipamentos com checkboxes
-- **RF04**: Cadastro de reservas com validações e conflitos
-- **RF05**: Controle de acesso por sessão
-- **RF06**: Diagrama de Entidade e Relacionamento (DER)
+- **RF04**: Cadastro de reservas com validações e bloqueio de atualização
+- **RF05**: Controle de acesso por sessão com LoginInterceptor
+- **RF06**: Diagrama de Entidade e Relacionamento (DER/MER)
 
 ### Inovações (RF07)
-- **Indicador visual**: Badge verde (Livre) / vermelho (Ocupado) nos recursos
-- **Horário automático**: Preenche horários ao selecionar recurso
+- **Indicador visual**: Badge verde (Livre) / vermelho (Ocupado) nos recursos via API REST
+- **Horário automático**: Preenche horários ao selecionar recurso via JavaScript
 - **Limite de reservas**: Máximo 5 reservas ativas por usuário
 - **Validações avançadas**: Conflito de agendamento, período e dia da semana
 
