@@ -50,3 +50,8 @@ INSERT INTO recursos (descricao, tipo, dias_semana_disponivel, data_inicial_agen
 ('Sala de Reunião Alpha', 'sala', 'Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira', '2026-01-01', '2026-12-31', '08:00', '18:00'),
 ('Sala de Reunião Beta', 'sala', 'Segunda-feira, Quarta-feira, Sexta-feira', '2026-01-01', '2026-12-31', '09:00', '17:00'),
 ('Projetor Portátil', 'equipamento', 'Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira, Sábado', '2026-01-01', '2026-12-31', '08:00', '20:00');
+
+INSERT INTO reservas (usuario_id, recurso_id, data, hora_inicial, hora_final, cancelamento, observacao) VALUES
+(1, 1, '2026-07-20', '09:00', '11:00', NULL, 'Reunião de projeto'),
+(2, 2, '2026-07-21', '10:00', '12:00', NULL, 'Apresentação'),
+(3, 3, '2026-07-22', '14:00', '16:00', NULL, 'Treinamento');

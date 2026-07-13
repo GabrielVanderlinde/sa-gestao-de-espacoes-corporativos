@@ -186,6 +186,12 @@ data/
 
 postman/
 └── Gestao-Espacos-Corporativos.postman_collection.json  # Coleção Postman
+
+der/
+└── DER.png            # Diagrama de Entidade e Relacionamento (RF06)
+
+mer/
+└── MER.md             # Modelo de Entidade e Relacionamento detalhado
 ```
 
 ## Postman
@@ -210,6 +216,7 @@ Para importar:
 - **RF02**: Cadastro de espaços/equipamentos com checkboxes
 - **RF04**: Cadastro de reservas com validações e conflitos
 - **RF05**: Controle de acesso por sessão
+- **RF06**: Diagrama de Entidade e Relacionamento (DER)
 
 ### Inovações (RF07)
 - **Indicador visual**: Badge verde (Livre) / vermelho (Ocupado) nos recursos
